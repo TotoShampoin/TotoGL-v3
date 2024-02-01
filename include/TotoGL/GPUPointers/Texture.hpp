@@ -6,7 +6,7 @@
 
 namespace TotoGL {
 
-using Texture = GPUPointers<
+using TextureId = GPUPointers<
     []() { GLuint b; glGenTextures(1, &b); return b; },
     [](GLuint& b) { glDeleteTextures(1, &b); }>;
 

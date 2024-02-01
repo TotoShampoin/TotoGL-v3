@@ -2,6 +2,12 @@
 
 #include "TotoGL/GPUPointers/Shader.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
+#include "TotoGL/Primitives/Texture.hpp"
+#include "TotoGL/Primitives/Uniform.hpp"
+#include <GL/gl.h>
+#include <functional>
+#include <map>
+#include <string>
 #include <variant>
 
 namespace TotoGL {
@@ -29,8 +35,28 @@ public:
         return *this;
     }
 
+    void uniform(const std::string& name, const UniformVariant& value) {
+        if (!_uniforms.contains(name)) {
+            _uniforms.insert_or_assign(name, Uniform(_program, name));
+        }
+        auto& uniform = _uniforms.at(name);
+        std::visit(uniform, value);
+    }
+    // ! Not too sure about the safety of this code
+    void uniform(const std::string& name, Texture& value) {
+        if (!_textures.contains(name)) {
+            _textures.insert_or_assign(name, value);
+        }
+        int map_index = std::distance(_textures.begin(), _textures.find(name));
+        uniform(name, map_index);
+        glActiveTexture(GL_TEXTURE0 + map_index);
+        value.bind();
+    }
+
 private:
     ProgramId _program;
+    std::map<std::string, Uniform> _uniforms;
+    std::map<std::string, std::reference_wrapper<Texture>> _textures;
 };
 
 } // namespace TotoGL

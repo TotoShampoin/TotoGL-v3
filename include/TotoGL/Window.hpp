@@ -33,7 +33,7 @@ public:
 
     bool shouldClose() { return glfwWindowShouldClose(_glfw_window); }
 
-    const GLFWwindow* glfwWindow() const { return _glfw_window; }
+    GLFWwindow* glfwWindow() const { return _glfw_window; }
 
 private:
     GLFWwindow* _glfw_window;

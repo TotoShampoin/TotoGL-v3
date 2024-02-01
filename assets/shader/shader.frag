@@ -4,8 +4,11 @@ in vec3 v_position;
 in vec3 v_normal;
 in vec2 v_uv;
 
-out vec3 f_frag_color;
+out vec4 f_frag_color;
+
+uniform float u_time;
+uniform sampler2D u_texture;
 
 void main() {
-    f_frag_color = vec3(v_uv, 0.);
+    f_frag_color = texture(u_texture, v_uv);
 }
