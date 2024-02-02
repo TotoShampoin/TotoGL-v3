@@ -24,6 +24,9 @@ public:
         other._id = GL_NONE;
     }
     GPUPointer& operator=(GPUPointer&& other) {
+        if (this == &other)
+            return *this;
+        destroyer(_id);
         _id = other._id;
         other._id = GL_NONE;
         return *this;
