@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <map>
 
 namespace TotoGL {
@@ -7,6 +8,11 @@ namespace TotoGL {
 template <typename Type>
 class Factory {
 public:
+    struct InstanceId {
+        const size_t id;
+        auto operator<=>(const InstanceId& other) const { return this->id <=> other.id; }
+    };
+
     Factory(const Factory&) = delete;
     Factory& operator=(const Factory&) = delete;
 
@@ -15,12 +21,12 @@ public:
         return instance;
     }
 
-    std::pair<size_t, Type&> createInstance(Type&& object = Type()) {
+    InstanceId createInstance(Type&& object = Type()) {
         auto id = nextId();
         _instances.emplace(id, std::move(object));
-        return { id, _instances[id] };
+        return id;
     }
-    void destroyInstance(const size_t& id) {
+    void destroyInstance(const InstanceId& id) {
         if (!_instances.contains(id))
             return;
         if constexpr (std::is_pointer<Type>::value) {
@@ -28,17 +34,17 @@ public:
         }
         _instances.erase(id);
     }
-    Type& getInstance(const size_t& id) {
-        return _instances[id];
+    Type& getInstance(const InstanceId& id) {
+        return _instances.at(id);
     }
 
 private:
     Factory() = default;
 
-    std::map<size_t, Type> _instances;
-    size_t nextId() {
+    std::map<InstanceId, Type> _instances;
+    InstanceId nextId() {
         static size_t id = 0;
-        return id++;
+        return InstanceId { id++ };
     }
 };
 

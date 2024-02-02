@@ -1,7 +1,5 @@
 #include <TotoGL/TotoGL.hpp>
 
-#include <GLFW/glfw3.h>
-
 #include <chrono>
 #include <cmath>
 #include <vector>
@@ -16,6 +14,7 @@ int main(int argc, const char* argv[]) {
     auto& texture_factory = TotoGL::Factory<TotoGL::Texture>::get();
     auto& vertex_shader_factory = TotoGL::Factory<TotoGL::Shader<VERTEX>>::get();
     auto& fragment_shader_factory = TotoGL::Factory<TotoGL::Shader<FRAGMENT>>::get();
+    auto& render_object_factory = TotoGL::Factory<TotoGL::RenderObject>::get();
 
     // Variables
     auto window = TotoGL::Window(640, 480, "a title");
@@ -33,15 +32,18 @@ int main(int argc, const char* argv[]) {
     };
     std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
 
-    auto [t1_id, texture_1] = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/logoIMAC.png")));
-    auto [t2_id, texture_2] = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png")));
+    auto t1_id = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/logoIMAC.png")));
+    auto t2_id = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png")));
+    auto mesh_id = mesh_factory.createInstance(TotoGL::Mesh(vertices, triangles));
+    auto mat_id = material_factory.createInstance(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
 
-    auto [mesh_id, mesh] = mesh_factory.createInstance(TotoGL::Mesh(vertices, triangles));
-    auto [mat_id, material] = material_factory.createInstance(TotoGL::Material(
-        std::ifstream("assets/shader/shader.vert"),
-        std::ifstream("assets/shader/shader.frag")));
+    auto& texture_1 = texture_factory.getInstance(t1_id);
+    auto& texture_2 = texture_factory.getInstance(t2_id);
+    auto& mesh = mesh_factory.getInstance(mesh_id);
+    auto& material = material_factory.getInstance(mat_id);
 
-    auto object = TotoGL::RenderObject(mesh, material);
+    auto obj_id = render_object_factory.createInstance(TotoGL::RenderObject(mesh, material));
+    auto& object = render_object_factory.getInstance(obj_id);
 
     // Initialisation
     glEnable(GL_BLEND);
