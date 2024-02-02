@@ -5,24 +5,24 @@
 
 namespace TotoGL {
 
-// ! This is a temporary class, it is very unsafe.
-// ! Be sure not to deallocate what you use in it.
-struct RenderObject {
-    Mesh& mesh;
-    Material& material;
-
+class RenderObject {
+public:
     RenderObject(Mesh& mesh, Material& material)
-        : mesh(mesh)
-        , material(material) { }
+        : _mesh(mesh)
+        , _material(material) { }
 
     void draw() {
-        material.use();
-        mesh.draw();
+        _material.use();
+        _mesh.draw();
     }
     static void unbind() {
         ShaderProgram::unuse();
         Mesh::unbind();
     }
+
+private:
+    Mesh& _mesh;
+    Material& _material;
 };
 
 } // namespace TotoGL
