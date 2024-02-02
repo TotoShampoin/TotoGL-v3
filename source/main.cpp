@@ -16,6 +16,10 @@ int main(int argc, const char* argv[]) {
     auto window = TotoGL::Window(640, 480, "a title");
     auto renderer = TotoGL::Renderer();
 
+    window.on(TotoGL::VectorEventName::FRAMEBUFFER_SIZE, [](const TotoGL::VectorEvent& event) {
+        glViewport(0, 0, int(event.x), int(event.y));
+    });
+
     auto vobj = TotoGL::VertexObject();
 
     auto vertex = TotoGL::Shader(VERTEX);
