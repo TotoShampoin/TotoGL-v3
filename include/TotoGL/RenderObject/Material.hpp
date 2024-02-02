@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TotoGL/GPUPointer/Shader.hpp"
+#include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/ShaderProgram.hpp"
 
 namespace TotoGL {
@@ -9,8 +10,26 @@ class Material {
 public:
     using ShaderType::FRAGMENT;
     using ShaderType::VERTEX;
-    Material(const Shader<VERTEX>& vertex, const Shader<FRAGMENT>& frament) {
-        _program.attach(vertex).attach(frament).link();
+    Material()
+        : Material(
+            Shader<VERTEX>(),
+            Shader<FRAGMENT>()) { }
+
+    Material(Shader<VERTEX>&& vertex, Shader<FRAGMENT>&& frament)
+        : _vertex(std::move(vertex))
+        , _fragment(std::move(frament)) {
+        compile();
+    }
+
+    Shader<VERTEX>& vertex() { return _vertex; }
+    Shader<FRAGMENT>& fragment() { return _fragment; }
+
+    void compile() {
+        _program
+            .detachAll()
+            .attach(_vertex)
+            .attach(_fragment)
+            .link();
     }
 
     void use() {
@@ -28,6 +47,8 @@ public:
     }
 
 private:
+    Shader<VERTEX> _vertex;
+    Shader<FRAGMENT> _fragment;
     ShaderProgram _program;
 };
 
