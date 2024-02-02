@@ -27,32 +27,17 @@ int main(int argc, const char* argv[]) {
     };
     std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
 
-    auto vobj = TotoGL::VertexObject(vertices, triangles);
+    auto mesh = TotoGL::VertexObject(vertices, triangles);
+    auto material = TotoGL::Material(
+        TotoGL::Shader<VERTEX>(std::ifstream("assets/shader/shader.vert")),
+        TotoGL::Shader<FRAGMENT>(std::ifstream("assets/shader/shader.frag")));
 
-    auto vertex = TotoGL::Shader<VERTEX>(std::ifstream("assets/shader/shader.vert"));
-    auto fragment = TotoGL::Shader<FRAGMENT>(std::ifstream("assets/shader/shader.frag"));
-    auto material = TotoGL::Material(vertex, fragment);
-
-    auto mesh = TotoGL::RenderObject(vobj, material);
+    auto object = TotoGL::RenderObject(mesh, material);
 
     auto texture_1 = TotoGL::Texture(std::ifstream("assets/textures/logoIMAC.png"));
     auto texture_2 = TotoGL::Texture(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png"));
 
     // Initialisation
-
-    // vobj.load(vertices, triangles);
-    // vertex.load(std::ifstream("assets/shader/shader.vert"));
-    // fragment.load(std::ifstream("assets/shader/shader.frag"));
-
-    // auto program = TotoGL::ShaderProgram();
-    // program
-    //     .attach(vertex)
-    //     .attach(fragment)
-    //     .link();
-
-    // texture_1.load(std::ifstream("assets/textures/logoIMAC.png"));
-    // texture_2.load(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png"));
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -71,7 +56,7 @@ int main(int argc, const char* argv[]) {
             } else {
                 material.uniform("u_texture", texture_2);
             }
-            mesh.draw();
+            object.draw();
         });
     }
 
