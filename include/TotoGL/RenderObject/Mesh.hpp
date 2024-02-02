@@ -7,9 +7,9 @@
 
 namespace TotoGL {
 
-class VertexObject {
+class Mesh {
 public:
-    VertexObject() {
+    Mesh() {
         glBindVertexArray(_vao.id());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo.id());
         glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
@@ -23,8 +23,8 @@ public:
         glBindVertexArray(GL_NONE);
     }
 
-    VertexObject(const std::vector<VertexType>& vertices, const std::vector<uint>& indices)
-        : VertexObject() {
+    Mesh(const std::vector<VertexType>& vertices, const std::vector<uint>& indices)
+        : Mesh() {
         load(vertices, indices);
     }
 

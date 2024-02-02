@@ -1,17 +1,17 @@
 #pragma once
 
 #include "Material.hpp"
-#include "VertexObject.hpp"
+#include "Mesh.hpp"
 
 namespace TotoGL {
 
 // ! This is a temporary class, it is very unsafe.
 // ! Be sure not to deallocate what you use in it.
 struct RenderObject {
-    VertexObject& mesh;
+    Mesh& mesh;
     Material& material;
 
-    RenderObject(VertexObject& mesh, Material& material)
+    RenderObject(Mesh& mesh, Material& material)
         : mesh(mesh)
         , material(material) { }
 
@@ -21,7 +21,7 @@ struct RenderObject {
     }
     static void unbind() {
         ShaderProgram::unuse();
-        VertexObject::unbind();
+        Mesh::unbind();
     }
 };
 
