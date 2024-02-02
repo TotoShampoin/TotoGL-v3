@@ -11,6 +11,12 @@ int main(int argc, const char* argv[]) {
     using TotoGL::ShaderType::VERTEX;
     using TotoGL::VectorEventName::FRAMEBUFFER_SIZE;
 
+    auto& material_factory = TotoGL::Factory<TotoGL::Material>::get();
+    auto& mesh_factory = TotoGL::Factory<TotoGL::Mesh>::get();
+    auto& texture_factory = TotoGL::Factory<TotoGL::Texture>::get();
+    auto& vertex_shader_factory = TotoGL::Factory<TotoGL::Shader<VERTEX>>::get();
+    auto& fragment_shader_factory = TotoGL::Factory<TotoGL::Shader<FRAGMENT>>::get();
+
     // Variables
     auto window = TotoGL::Window(640, 480, "a title");
     auto renderer = TotoGL::Renderer();
@@ -27,15 +33,15 @@ int main(int argc, const char* argv[]) {
     };
     std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
 
-    auto mesh = TotoGL::VertexObject(vertices, triangles);
-    auto material = TotoGL::Material(
-        TotoGL::Shader<VERTEX>(std::ifstream("assets/shader/shader.vert")),
-        TotoGL::Shader<FRAGMENT>(std::ifstream("assets/shader/shader.frag")));
+    auto [t1_id, texture_1] = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/logoIMAC.png")));
+    auto [t2_id, texture_2] = texture_factory.createInstance(TotoGL::Texture(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png")));
+
+    auto [mesh_id, mesh] = mesh_factory.createInstance(TotoGL::Mesh(vertices, triangles));
+    auto [mat_id, material] = material_factory.createInstance(TotoGL::Material(
+        std::ifstream("assets/shader/shader.vert"),
+        std::ifstream("assets/shader/shader.frag")));
 
     auto object = TotoGL::RenderObject(mesh, material);
-
-    auto texture_1 = TotoGL::Texture(std::ifstream("assets/textures/logoIMAC.png"));
-    auto texture_2 = TotoGL::Texture(std::ifstream("assets/textures/Apple_Computer_Logo_rainbow.svg.png"));
 
     // Initialisation
     glEnable(GL_BLEND);
