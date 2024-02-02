@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "TotoGL/GPUPointers/Shader.hpp"
+#include "TotoGL/GPUPointer/Shader.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TotoGL/GPUPointers/Shader.hpp"
+#include "TotoGL/GPUPointer/Shader.hpp"
 #include <array>
 #include <fstream>
 #include <iostream>
@@ -8,20 +8,24 @@
 
 namespace TotoGL {
 
+template <ShaderType type>
 class Shader {
 public:
-    Shader(ShaderType type) {
-        switch (type) {
-        case ShaderType::VERTEX:
+    using ShaderType::COMPUTE;
+    using ShaderType::FRAGMENT;
+    using ShaderType::VERTEX;
+    Shader() {
+        if constexpr (type == VERTEX) {
             _shader = VertexShaderId();
-            break;
-        case ShaderType::FRAGMENT:
+        } else if constexpr (type == FRAGMENT) {
             _shader = FragmentShaderId();
-            break;
-        case ShaderType::COMPUTE:
+        } else if constexpr (type == COMPUTE) {
             _shader = ComputeShaderId();
-            break;
         }
+    }
+    Shader(std::ifstream&& file)
+        : Shader() {
+        load(std::move(file));
     }
 
     void load(std::ifstream&& file) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TotoGL/GPUPointers/GPUPointers.hpp"
+#include "TotoGL/GPUPointer/GPUPointer.hpp"
 #include <GL/glew.h>
 #include <variant>
 
@@ -14,25 +14,25 @@ enum class ShaderType {
 
 // This won't work, you can't use a runtime parameter as template
 // // template <ShaderType type>
-// // using ShaderId = GPUPointers<
+// // using ShaderId = GPUPointer<
 // //     []() { return glCreateShader(static_cast<GLenum>(type)); },
 // //     [](GLuint& s) { glDeleteShader(s); }>;
 
-using VertexShaderId = GPUPointers<
+using VertexShaderId = GPUPointer<
     []() { return glCreateShader(GL_VERTEX_SHADER); },
     [](GLuint& s) { glDeleteShader(s); }>;
 
-using FragmentShaderId = GPUPointers<
+using FragmentShaderId = GPUPointer<
     []() { return glCreateShader(GL_FRAGMENT_SHADER); },
     [](GLuint& s) { glDeleteShader(s); }>;
 
-using ComputeShaderId = GPUPointers<
+using ComputeShaderId = GPUPointer<
     []() { return glCreateShader(GL_COMPUTE_SHADER); },
     [](GLuint& s) { glDeleteShader(s); }>;
 
 using ShaderId = std::variant<VertexShaderId, FragmentShaderId, ComputeShaderId>;
 
-using ProgramId = GPUPointers<
+using ProgramId = GPUPointer<
     []() { return glCreateProgram(); },
     [](GLuint& p) { glDeleteProgram(p); }>;
 

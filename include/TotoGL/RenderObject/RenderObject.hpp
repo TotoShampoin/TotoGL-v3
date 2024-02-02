@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderProgram.hpp"
+#include "Material.hpp"
 #include "VertexObject.hpp"
 
 namespace TotoGL {
@@ -10,9 +10,9 @@ namespace TotoGL {
 // ! Ideally, you would create only in the scope you actually need it for.
 struct RenderObject {
     VertexObject& mesh;
-    ShaderProgram& material;
+    Material& material;
 
-    RenderObject(VertexObject& mesh, ShaderProgram& material)
+    RenderObject(VertexObject& mesh, Material& material)
         : mesh(mesh)
         , material(material) { }
 

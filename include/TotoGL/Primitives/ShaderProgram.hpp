@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TotoGL/GPUPointers/Shader.hpp"
+#include "TotoGL/GPUPointer/Shader.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
 #include "TotoGL/Primitives/Uniform.hpp"
@@ -27,9 +27,19 @@ public:
         glUseProgram(0);
     }
 
-    ShaderProgram& attach(const Shader& shader) {
+    template <ShaderType type>
+    ShaderProgram& attach(const Shader<type>& shader) {
         std::visit([&](auto&& shader_id) {
             glAttachShader(_program.id(), shader_id.id());
+        },
+            shader._shader);
+        return *this;
+    }
+
+    template <ShaderType type>
+    ShaderProgram& detach(const Shader<type>& shader) {
+        std::visit([&](auto&& shader_id) {
+            glDetachShader(_program.id(), shader_id.id());
         },
             shader._shader);
         return *this;

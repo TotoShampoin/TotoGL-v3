@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "TotoGL/GPUPointers/Texture.hpp"
+#include "TotoGL/GPUPointer/Texture.hpp"
 #include <fstream>
 #include <stb_image.h>
 
@@ -7,6 +7,12 @@ namespace TotoGL {
 
 class Texture {
 public:
+    Texture() = default;
+    Texture(std::ifstream&& file)
+        : Texture() {
+        load(std::move(file));
+    }
+
     void load(std::ifstream&& file) {
         auto str = std::string(
             std::istreambuf_iterator<char>(file),

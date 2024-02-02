@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TotoGL/GPUPointers/Buffers.hpp"
-#include "Vertex.hpp"
+#include "TotoGL/GPUPointer/Buffers.hpp"
+#include "TotoGL/Primitives/Vertex.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -21,6 +21,11 @@ public:
         glVertexAttribPointer(VERTEX_ATTR_UV, sizeof(TotoGL::VertexType::uv) / sizeof(float), GL_FLOAT, GL_FALSE, sizeof(TotoGL::VertexType), (const void*)offsetof(TotoGL::VertexType, uv));
         glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
         glBindVertexArray(GL_NONE);
+    }
+
+    VertexObject(const std::vector<VertexType>& vertices, const std::vector<uint>& indices)
+        : VertexObject() {
+        load(vertices, indices);
     }
 
     void load(const std::vector<VertexType>& vertices, const std::vector<uint>& indices) {

@@ -2,19 +2,19 @@
 
 #include <GL/glew.h> // MUST STAY ON TOP
 
-#include "./GPUPointers.hpp"
+#include "./GPUPointer.hpp"
 
 namespace TotoGL {
 
-using VboId = GPUPointers<
+using VboId = GPUPointer<
     []() { GLuint b; glCreateBuffers(1, &b); return b; },
     [](GLuint& b) { glDeleteBuffers(1, &b); }>;
 
-using VaoId = GPUPointers<
+using VaoId = GPUPointer<
     []() { GLuint b; glCreateVertexArrays(1, &b); return b; },
     [](GLuint& b) { glDeleteVertexArrays(1, &b); }>;
 
-using IboId = GPUPointers<
+using IboId = GPUPointer<
     []() { GLuint b; glCreateBuffers(1, &b); return b; },
     [](GLuint& b) { glDeleteBuffers(1, &b); }>;
 
