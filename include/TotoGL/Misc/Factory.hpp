@@ -12,6 +12,7 @@ public:
         const size_t id;
         auto operator<=>(const InstanceId& other) const { return this->id <=> other.id; }
     };
+    static constexpr auto NULL_INSTANCE = InstanceId { 0 };
 
     Factory(const Factory&) = delete;
     Factory& operator=(const Factory&) = delete;
@@ -43,7 +44,7 @@ private:
 
     std::map<InstanceId, Type> _instances;
     InstanceId nextId() {
-        static size_t id = 0;
+        static size_t id = 1;
         return InstanceId { id++ };
     }
 };
