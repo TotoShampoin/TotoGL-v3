@@ -25,8 +25,7 @@ int main(int argc, const char* argv[]) {
 
     auto camera = TotoGL::Camera::Perspective(glm::radians(70.f), (float)WIDTH / HEIGHT, 1.f, 100.f);
     auto clock = TotoGL::Clock();
-    auto transform = TotoGL::Transformation();
-    transform.translate({ 0, 0, -2 });
+    object.translate({ 0, 0, -2 });
 
     auto projection = camera.projection();
     material.uniform("u_projection", projection);
@@ -49,11 +48,11 @@ int main(int argc, const char* argv[]) {
         float time = clock.getTime();
         float delta = clock.getDeltaTime();
 
-        transform.rotate(delta, { 1, 1, 0 });
+        object.rotate(delta, { 1, 1, 0 });
 
         auto [width, height] = window.size();
 
-        auto modelview = camera.view() * transform.matrix();
+        auto modelview = camera.view() * object.transformMatrix();
         auto normal = glm::mat3(glm::transpose(glm::inverse(modelview)));
 
         material.uniform("u_time", time);
