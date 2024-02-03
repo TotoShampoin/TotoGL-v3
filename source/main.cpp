@@ -45,7 +45,6 @@ int main(int argc, const char* argv[]) {
     auto transform = TotoGL::Transformation();
     transform.translate({ 0, 0, -2 });
 
-    // WHY IS THIS ONE NOT WORKING
     auto projection = camera.projection();
     material.uniform("u_projection", projection);
 
