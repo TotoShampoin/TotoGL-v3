@@ -13,10 +13,10 @@ int main(int argc, const char* argv[]) {
     auto window = TotoGL::Window(WIDTH, HEIGHT, "a title");
     auto renderer = TotoGL::Renderer();
 
-    const auto& tex_id = TotoGL::TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
-    const auto& mat_id = TotoGL::MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
-    const auto& mesh_id = TotoGL::MeshFactory::create(TotoGL::Mesh::cube());
-    const auto& obj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
+    const auto tex_id = TotoGL::TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
+    const auto mat_id = TotoGL::MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
+    const auto mesh_id = TotoGL::MeshFactory::create(TotoGL::Mesh::cube());
+    const auto obj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
 
     auto& texture = TotoGL::TextureFactory::get(tex_id);
     auto& mesh = TotoGL::MeshFactory::get(mesh_id);
