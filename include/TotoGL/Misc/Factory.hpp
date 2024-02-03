@@ -8,44 +8,48 @@ namespace TotoGL {
 template <typename Type>
 class Factory {
 public:
-    struct InstanceId {
+    struct ObjectInstanceId {
         const size_t id;
-        auto operator<=>(const InstanceId& other) const { return this->id <=> other.id; }
+        auto operator<=>(const ObjectInstanceId& other) const { return this->id <=> other.id; }
     };
-    static constexpr auto NULL_INSTANCE = InstanceId { 0 };
+    static constexpr auto NULL_INSTANCE = ObjectInstanceId { 0 };
 
     Factory(const Factory&) = delete;
     Factory& operator=(const Factory&) = delete;
 
-    static Factory& get() {
+    static ObjectInstanceId create(Type&& object_instance = Type()) {
+        auto& factory = factoryInstance();
+        auto id = factory.nextObjectInstanceId();
+        factory._object_instances.emplace(id, std::move(object_instance));
+        return id;
+    }
+    static void destroy(const ObjectInstanceId& id) {
+        auto& factory = factoryInstance();
+        if (!factory._object_instances.contains(id))
+            return;
+        if constexpr (std::is_pointer<Type>::value) {
+            delete factory._object_instances.at(id);
+        }
+        factory._object_instances.erase(id);
+    }
+    static Type& get(const ObjectInstanceId& id) {
+        auto& factory = factoryInstance();
+        return factory._object_instances.at(id);
+    }
+
+    static Factory& factoryInstance() {
         static Factory instance;
         return instance;
     }
 
-    InstanceId createInstance(Type&& object = Type()) {
-        auto id = nextId();
-        _instances.emplace(id, std::move(object));
-        return id;
-    }
-    void destroyInstance(const InstanceId& id) {
-        if (!_instances.contains(id))
-            return;
-        if constexpr (std::is_pointer<Type>::value) {
-            delete _instances.at(id);
-        }
-        _instances.erase(id);
-    }
-    Type& getInstance(const InstanceId& id) {
-        return _instances.at(id);
-    }
-
 private:
     Factory() = default;
+    ~Factory() = default;
 
-    std::map<InstanceId, Type> _instances;
-    InstanceId nextId() {
+    std::map<ObjectInstanceId, Type> _object_instances;
+    ObjectInstanceId nextObjectInstanceId() {
         static size_t id = 1;
-        return InstanceId { id++ };
+        return ObjectInstanceId { id++ };
     }
 };
 
