@@ -9,13 +9,7 @@ namespace TotoGL {
 template <typename Type>
 class Factory {
 public:
-    struct ObjectInstanceId {
-        const size_t id;
-        auto operator<=>(const ObjectInstanceId& other) const { return this->id <=> other.id; }
-        bool operator<(const ObjectInstanceId& other) const { return (*this <=> other) < 0; }
-        bool operator>(const ObjectInstanceId& other) const { return (*this <=> other) > 0; }
-        bool operator==(const ObjectInstanceId& other) const { return (*this <=> other) == 0; }
-    };
+    using ObjectInstanceId = size_t;
     static constexpr auto NULL_INSTANCE = ObjectInstanceId { 0 };
 
     Factory(const Factory&) = delete;
