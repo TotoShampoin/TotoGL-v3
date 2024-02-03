@@ -1,10 +1,11 @@
 #pragma once
 
 #include "TotoGL/GPUPointer/Shader.hpp"
+#include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
 #include "TotoGL/Primitives/Uniform.hpp"
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <array>
 #include <functional>
 #include <map>
@@ -79,5 +80,7 @@ private:
     std::map<std::string, Uniform> _uniforms;
     std::map<std::string, std::reference_wrapper<Texture>> _textures;
 };
+
+using ShaderProgramFactory = Factory<ShaderProgram>;
 
 } // namespace TotoGL

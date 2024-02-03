@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TotoGL/GPUPointer/Shader.hpp"
+#include "TotoGL/Misc/Factory.hpp"
 #include <array>
 #include <fstream>
 #include <iostream>
@@ -68,5 +69,8 @@ private:
     friend class ShaderProgram;
     friend class Material;
 };
+
+template <ShaderType type>
+using ShaderFactory = Factory<Shader<type>>;
 
 } // namespace TotoGL

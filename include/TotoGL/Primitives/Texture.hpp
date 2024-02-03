@@ -1,7 +1,9 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "TotoGL/GPUPointer/Texture.hpp"
-#include <fstream>
 #include <stb_image.h>
+
+#include "TotoGL/GPUPointer/Texture.hpp"
+#include "TotoGL/Misc/Factory.hpp"
+#include <fstream>
 
 namespace TotoGL {
 
@@ -57,5 +59,7 @@ private:
     TextureId _texture;
     int _width, _height, _color_depth;
 };
+
+using TextureFactory = Factory<Texture>;
 
 } // namespace TotoGL

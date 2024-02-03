@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TotoGL/GPUPointer/Buffers.hpp"
+#include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Vertex.hpp"
 #include <glm/glm.hpp>
 #include <vector>
@@ -120,5 +121,7 @@ private:
     static constexpr uint VERTEX_ATTR_NORMAL = 1;
     static constexpr uint VERTEX_ATTR_UV = 2;
 };
+
+using MeshFactory = Factory<Mesh>;
 
 } // namespace TotoGL
