@@ -50,8 +50,6 @@ public:
             glfwGetError(&error);
             throw std::runtime_error(error);
         }
-        glfwMakeContextCurrent(_glfw_window);
-        glfwSetWindowUserPointer(_glfw_window, this);
         bindEvents();
     }
     Window(const Window&) = delete;
@@ -67,6 +65,11 @@ public:
     }
 
     bool shouldClose() { return glfwWindowShouldClose(_glfw_window); }
+    std::array<int, 2> size() {
+        std::array<int, 2> s;
+        glfwGetWindowSize(_glfw_window, &s[0], &s[1]);
+        return s;
+    }
 
     GLFWwindow* glfwWindow() const { return _glfw_window; }
 
@@ -100,6 +103,8 @@ private:
     // ? I want to reduce code redundancy here too :(
 
     void bindEvents() {
+        glfwMakeContextCurrent(_glfw_window);
+        glfwSetWindowUserPointer(_glfw_window, this);
         glfwSetWindowCloseCallback(_glfw_window, [](GLFWwindow* glwin) {
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
             window->emit(FlagEventName::WINDOW_CLOSE, FlagEvent { true });
