@@ -1,36 +1,27 @@
 #include <TotoGL/TotoGL.hpp>
 
 #include <glm/glm.hpp>
-#include <vector>
 
 int main(int argc, const char* argv[]) {
     using TotoGL::ShaderType::FRAGMENT;
     using TotoGL::ShaderType::VERTEX;
     using TotoGL::VectorEventName::FRAMEBUFFER_SIZE;
-    using MaterialFactory = TotoGL::Factory<TotoGL::Material>;
-    using MeshFactory = TotoGL::Factory<TotoGL::Mesh>;
-    using TextureFactory = TotoGL::Factory<TotoGL::Texture>;
-    using VertexShaderFactory = TotoGL::Factory<TotoGL::Shader<VERTEX>>;
-    using FragmentShaderFactory = TotoGL::Factory<TotoGL::Shader<FRAGMENT>>;
-    using RenderObjectFactory = TotoGL::Factory<TotoGL::RenderObject>;
 
     constexpr int WIDTH = 640;
     constexpr int HEIGHT = 480;
 
-    auto window
-        = TotoGL::Window(WIDTH, HEIGHT, "a title");
+    auto window = TotoGL::Window(WIDTH, HEIGHT, "a title");
     auto renderer = TotoGL::Renderer();
 
-    auto tex_id = TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
-    auto mat_id = MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
-    auto mesh_id = MeshFactory::create(TotoGL::Mesh::cube());
+    auto tex_id = TotoGL::TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
+    auto mat_id = TotoGL::MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
+    auto mesh_id = TotoGL::MeshFactory::create(TotoGL::Mesh::cube());
+    auto obj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
 
-    auto& texture = TextureFactory::get(tex_id);
-    auto& mesh = MeshFactory::get(mesh_id);
-    auto& material = MaterialFactory::get(mat_id);
-
-    auto obj_id = RenderObjectFactory::create(TotoGL::RenderObject(mesh, material));
-    auto& object = RenderObjectFactory::get(obj_id);
+    auto& texture = TotoGL::TextureFactory::get(tex_id);
+    auto& mesh = TotoGL::MeshFactory::get(mesh_id);
+    auto& material = TotoGL::MaterialFactory::get(mat_id);
+    auto& object = TotoGL::RenderObjectFactory::get(obj_id);
 
     auto camera = TotoGL::Camera::Perspective(glm::radians(70.f), (float)WIDTH / HEIGHT, 1.f, 100.f);
     auto clock = TotoGL::Clock();
