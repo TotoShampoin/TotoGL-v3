@@ -8,10 +8,17 @@ out vec3 v_position;
 out vec3 v_normal;
 out vec2 v_uv;
 
+uniform mat4 u_projection;
+uniform mat4 u_modelview;
+uniform mat3 u_normal;
+
 void main() {
-    v_position = a_position;
-    v_normal = a_normal;
+    vec4 position = u_modelview * vec4(a_position, 1.);
+    vec3 normal = u_normal * a_normal;
+
+    v_position = position.xyz;
+    v_normal = normal;
     v_uv = a_uv;
 
-    gl_Position = vec4(a_position, 1.);
+    gl_Position = u_projection * position;
 }

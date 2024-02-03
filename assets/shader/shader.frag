@@ -10,5 +10,6 @@ uniform float u_time;
 uniform sampler2D u_texture;
 
 void main() {
-    f_frag_color = texture(u_texture, v_uv);
+    vec4 color = texture(u_texture, v_uv);
+    f_frag_color = color * vec4(v_normal, 1.);
 }
