@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <map>
+#include <stdexcept>
 
 namespace TotoGL {
 
@@ -11,6 +12,9 @@ public:
     struct ObjectInstanceId {
         const size_t id;
         auto operator<=>(const ObjectInstanceId& other) const { return this->id <=> other.id; }
+        bool operator<(const ObjectInstanceId& other) const { return (*this <=> other) < 0; }
+        bool operator>(const ObjectInstanceId& other) const { return (*this <=> other) > 0; }
+        bool operator==(const ObjectInstanceId& other) const { return (*this <=> other) == 0; }
     };
     static constexpr auto NULL_INSTANCE = ObjectInstanceId { 0 };
 
@@ -33,6 +37,8 @@ public:
         factory._object_instances.erase(id);
     }
     static Type& get(const ObjectInstanceId& id) {
+        if (id == NULL_INSTANCE)
+            throw std::out_of_range("ObjectInstanceId points to null value");
         auto& factory = factoryInstance();
         return factory._object_instances.at(id);
     }
