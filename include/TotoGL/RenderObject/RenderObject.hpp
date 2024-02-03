@@ -2,19 +2,23 @@
 
 #include "Material.hpp"
 #include "Mesh.hpp"
+#include "TotoGL/Misc/Factory.hpp"
 
 namespace TotoGL {
 
 class RenderObject {
 public:
-    RenderObject(Mesh& mesh, Material& material)
+    RenderObject(MeshFactory::ObjectInstanceId& mesh, MaterialFactory::ObjectInstanceId& material)
         : _mesh(mesh)
         , _material(material) { }
 
     void draw() {
-        _material.use();
-        _mesh.draw();
-        _material.unuse();
+        auto& material = MaterialFactory::get(_material);
+        auto& mesh = MeshFactory::get(_mesh);
+
+        material.use();
+        mesh.draw();
+        material.unuse();
     }
     static void unbind() {
         ShaderProgram::unuse();
@@ -22,8 +26,10 @@ public:
     }
 
 private:
-    Mesh& _mesh;
-    Material& _material;
+    MeshFactory::ObjectInstanceId _mesh;
+    MaterialFactory::ObjectInstanceId _material;
 };
+
+using RenderObjectFactory = Factory<RenderObject>;
 
 } // namespace TotoGL
