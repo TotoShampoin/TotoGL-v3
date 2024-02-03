@@ -25,11 +25,7 @@ public:
     Shader<FRAGMENT>& fragment() { return _fragment; }
 
     void compile() {
-        _program
-            .detachAll()
-            .attach(_vertex)
-            .attach(_fragment)
-            .link();
+        _program.detachAll().attach(_vertex).attach(_fragment).link();
     }
 
     void use() {
@@ -40,10 +36,14 @@ public:
     }
 
     void uniform(const std::string& name, const UniformVariant& value) {
+        use();
         _program.uniform(name, value);
+        unuse();
     }
     void uniform(const std::string& name, Texture& value) {
+        use();
         _program.uniform(name, value);
+        unuse();
     }
 
 private:

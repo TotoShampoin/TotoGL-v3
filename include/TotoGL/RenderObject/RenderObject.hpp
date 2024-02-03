@@ -14,6 +14,7 @@ public:
     void draw() {
         _material.use();
         _mesh.draw();
+        _material.unuse();
     }
     static void unbind() {
         ShaderProgram::unuse();

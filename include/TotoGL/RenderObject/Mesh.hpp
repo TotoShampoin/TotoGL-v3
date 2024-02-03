@@ -41,6 +41,7 @@ public:
     void draw() {
         bind();
         glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+        unbind();
     }
 
     void bind() {

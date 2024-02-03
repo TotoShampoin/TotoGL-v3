@@ -64,6 +64,7 @@ public:
         glfwPollEvents();
     }
 
+    void makeContextCurrent() { glfwMakeContextCurrent(_glfw_window); }
     bool shouldClose() { return glfwWindowShouldClose(_glfw_window); }
     std::array<int, 2> size() {
         std::array<int, 2> s;
