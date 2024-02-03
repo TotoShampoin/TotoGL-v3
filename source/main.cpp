@@ -21,17 +21,9 @@ int main(int argc, const char* argv[]) {
         = TotoGL::Window(WIDTH, HEIGHT, "a title");
     auto renderer = TotoGL::Renderer();
 
-    std::vector<TotoGL::VertexType> vertices = {
-        { { -.5, .5, 0 }, { 0, 0, 1 }, { 0, 0 } },
-        { { .5, .5, 0 }, { 0, 0, 1 }, { 1, 0 } },
-        { { .5, -.5, 0 }, { 0, 0, 1 }, { 1, 1 } },
-        { { -.5, -.5, 0 }, { 0, 0, 1 }, { 0, 1 } },
-    };
-    std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
-
     auto tex_id = TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
     auto mat_id = MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
-    auto mesh_id = MeshFactory::create(TotoGL::Mesh(vertices, triangles));
+    auto mesh_id = MeshFactory::create(TotoGL::Mesh::cube());
 
     auto& texture = TextureFactory::get(tex_id);
     auto& mesh = MeshFactory::get(mesh_id);
@@ -56,8 +48,8 @@ int main(int argc, const char* argv[]) {
         material.uniform("u_projection", projection);
     });
 
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

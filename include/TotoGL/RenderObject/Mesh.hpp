@@ -52,6 +52,64 @@ public:
         glBindVertexArray(0);
     }
 
+    // geometry digures
+
+    static Mesh quad(float width = 1.f, float height = 1.f) {
+        static std::vector<VertexType> vertices = {
+            { { -width / 2.f, height / 2.f, 0 }, { 0, 0, 1 }, { 0, 0 } },
+            { { width / 2.f, height / 2.f, 0 }, { 0, 0, 1 }, { 1, 0 } },
+            { { width / 2.f, -height / 2.f, 0 }, { 0, 0, 1 }, { 1, 1 } },
+            { { -width / 2.f, -height / 2.f, 0 }, { 0, 0, 1 }, { 0, 1 } },
+        };
+        static std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
+        return Mesh(vertices, triangles);
+    }
+
+    // each face independent from the other
+    static Mesh cube(float width = 1.f, float height = 1.f, float depth = 1.f) {
+        static std::vector<VertexType> vertices = {
+            // front
+            { { -width / 2.f, height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 0, 0 } },
+            { { width / 2.f, height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 1, 0 } },
+            { { width / 2.f, -height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 1, 1 } },
+            { { -width / 2.f, -height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 0, 1 } },
+            // back
+            { { -width / 2.f, height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 1, 0 } },
+            { { width / 2.f, height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 0, 0 } },
+            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 0, 1 } },
+            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 1, 1 } },
+            // left
+            { { -width / 2.f, height / 2.f, -depth / 2.f }, { -1, 0, 0 }, { 0, 0 } },
+            { { -width / 2.f, height / 2.f, depth / 2.f }, { -1, 0, 0 }, { 1, 0 } },
+            { { -width / 2.f, -height / 2.f, depth / 2.f }, { -1, 0, 0 }, { 1, 1 } },
+            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { -1, 0, 0 }, { 0, 1 } },
+            // right
+            { { width / 2.f, height / 2.f, -depth / 2.f }, { 1, 0, 0 }, { 1, 0 } },
+            { { width / 2.f, height / 2.f, depth / 2.f }, { 1, 0, 0 }, { 0, 0 } },
+            { { width / 2.f, -height / 2.f, depth / 2.f }, { 1, 0, 0 }, { 0, 1 } },
+            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 1, 0, 0 }, { 1, 1 } },
+            // top
+            { { -width / 2.f, height / 2.f, -depth / 2.f }, { 0, 1, 0 }, { 0, 0 } },
+            { { width / 2.f, height / 2.f, -depth / 2.f }, { 0, 1, 0 }, { 1, 0 } },
+            { { width / 2.f, height / 2.f, depth / 2.f }, { 0, 1, 0 }, { 1, 1 } },
+            { { -width / 2.f, height / 2.f, depth / 2.f }, { 0, 1, 0 }, { 0, 1 } },
+            // bottom
+            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { 0, -1, 0 }, { 1, 0 } },
+            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 0, -1, 0 }, { 0, 0 } },
+            { { width / 2.f, -height / 2.f, depth / 2.f }, { 0, -1, 0 }, { 0, 1 } },
+            { { -width / 2.f, -height / 2.f, depth / 2.f }, { 0, -1, 0 }, { 1, 1 } },
+        };
+        static std::vector<uint> triangles = {
+            0, 1, 2, 0, 2, 3, // front
+            4, 6, 5, 4, 7, 6, // back
+            8, 9, 10, 8, 10, 11, // left
+            12, 14, 13, 12, 15, 14, // right
+            16, 17, 18, 16, 18, 19, // top
+            20, 22, 21, 20, 23, 22, // bottom
+        };
+        return Mesh(vertices, triangles);
+    }
+
 private:
     VboId _vbo;
     IboId _ibo;
