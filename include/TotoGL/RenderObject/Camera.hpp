@@ -28,8 +28,22 @@ public:
         return *this;
     }
 
-    const glm::mat4& view() const { return _view.matrix(); }
-    const glm::mat4& projection() const { return _projection; }
+    Camera& translate(const glm::vec3& translation) {
+        _view.translate(translation);
+        return *this;
+    }
+    Camera& scale(const glm::vec3& factor) {
+        _view.scale(factor);
+        return *this;
+    }
+    Camera& rotate(const float& angle, const glm::vec3& axis) {
+        _view.rotate(angle, axis);
+        return *this;
+    }
+    Transformation& transformation() { return _view; }
+
+    glm::mat4 view() const { return _view.matrix(); }
+    glm::mat4 projection() const { return _projection; }
 
     glm::mat4 viewProjection() const { return _projection * _view.matrix(); }
 

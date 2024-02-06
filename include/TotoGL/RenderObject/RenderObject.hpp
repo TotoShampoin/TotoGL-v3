@@ -26,7 +26,8 @@ public:
         return *this;
     }
 
-    glm::mat4& transformMatrix() { return _transform.matrix(); }
+    Transformation& transformation() { return _transform; }
+    glm::mat4 transformMatrix() const { return _transform.matrix(); }
 
     void draw() {
         auto& material = MaterialFactory::get(_material);
