@@ -16,12 +16,15 @@ public:
         camera.transformation().matrix() = //
             glm::translate(glm::mat4(1), { 0, 0, -_distance }) * //
             glm::rotate(glm::mat4(1), _angle_x, { 1, 0, 0 }) * //
-            glm::rotate(glm::mat4(1), _angle_y, { 0, 1, 0 });
+            glm::rotate(glm::mat4(1), _angle_y, { 0, 1, 0 }) * glm::translate(glm::mat4(1), _position);
     }
     void move(float x, float y) {
         _angle_x += x;
         _angle_y += y;
     }
+
+    glm::vec3& position() { return _position; }
+    glm::vec3 position() const { return _position; }
 
     float& angle_x() { return _angle_x; }
     float angle_x() const { return _angle_x; }
@@ -31,6 +34,7 @@ public:
     float distance() const { return _distance; }
 
 private:
+    glm::vec3 _position;
     float _angle_x;
     float _angle_y;
     float _distance;
