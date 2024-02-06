@@ -29,6 +29,7 @@ enum class VectorEventName {
 };
 struct VectorEvent {
     double x = 0, y = 0;
+    double dx = 0, dy = 0;
 };
 
 enum class InputEventName {
@@ -128,28 +129,52 @@ private:
         });
 
         glfwSetWindowSizeCallback(_glfw_window, [](GLFWwindow* glwin, int width, int height) {
+            static int last_width = width, last_height = height;
+            int delta_width = width - last_width, delta_height = height - last_height;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::WINDOW_SIZE, VectorEvent { (double)width, (double)height });
+            window->emit(VectorEventName::WINDOW_SIZE, VectorEvent { (double)width, (double)height, (double)delta_width, (double)delta_height });
+            last_width = width;
+            last_height = height;
         });
         glfwSetFramebufferSizeCallback(_glfw_window, [](GLFWwindow* glwin, int width, int height) {
+            static int last_width = width, last_height = height;
+            int delta_width = width - last_width, delta_height = height - last_height;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::FRAMEBUFFER_SIZE, VectorEvent { (double)width, (double)height });
+            window->emit(VectorEventName::FRAMEBUFFER_SIZE, VectorEvent { (double)width, (double)height, (double)delta_width, (double)delta_height });
+            last_width = width;
+            last_height = height;
         });
         glfwSetWindowContentScaleCallback(_glfw_window, [](GLFWwindow* glwin, float xscale, float yscale) {
+            static float last_xscale = xscale, last_yscale = yscale;
+            float delta_xscale = xscale - last_xscale, delta_yscale = yscale - last_yscale;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::CONTENT_SCALE_SIZE, VectorEvent { (double)xscale, (double)yscale });
+            window->emit(VectorEventName::CONTENT_SCALE_SIZE, VectorEvent { (double)xscale, (double)yscale, delta_xscale, delta_yscale });
+            last_xscale = xscale;
+            last_yscale = yscale;
         });
         glfwSetWindowPosCallback(_glfw_window, [](GLFWwindow* glwin, int xpos, int ypos) {
+            static int last_xpos = xpos, last_ypos = ypos;
+            int delta_xpos = xpos - last_xpos, delta_ypos = ypos - last_ypos;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::WINDOW_POSITION, VectorEvent { (double)xpos, (double)ypos });
+            window->emit(VectorEventName::WINDOW_POSITION, VectorEvent { (double)xpos, (double)ypos, (double)delta_xpos, (double)delta_ypos });
+            last_xpos = xpos;
+            last_ypos = ypos;
         });
         glfwSetCursorPosCallback(_glfw_window, [](GLFWwindow* glwin, double xpos, double ypos) {
+            static double last_xpos = xpos, last_ypos = ypos;
+            double delta_xpos = xpos - last_xpos, delta_ypos = ypos - last_ypos;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::CURSOR_POSITION, VectorEvent { xpos, ypos });
+            window->emit(VectorEventName::CURSOR_POSITION, VectorEvent { xpos, ypos, delta_xpos, delta_ypos });
+            last_xpos = xpos;
+            last_ypos = ypos;
         });
         glfwSetScrollCallback(_glfw_window, [](GLFWwindow* glwin, double xoffset, double yoffset) {
+            static double last_xoffset = xoffset, last_yoffset = yoffset;
+            double delta_xoffset = xoffset - last_xoffset, delta_yoffset = yoffset - last_yoffset;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::SCROLL, VectorEvent { xoffset, yoffset });
+            window->emit(VectorEventName::SCROLL, VectorEvent { xoffset, yoffset, delta_xoffset, delta_yoffset });
+            last_xoffset = xoffset;
+            last_yoffset = yoffset;
         });
 
         glfwSetKeyCallback(_glfw_window, [](GLFWwindow* glwin, int key, int scancode, int action, int mods) {
