@@ -34,10 +34,10 @@ public:
     float distance() const { return _distance; }
 
 private:
-    glm::vec3 _position;
-    float _angle_x;
-    float _angle_y;
-    float _distance;
+    glm::vec3 _position { 0, 0, 0 };
+    float _angle_x { 0 };
+    float _angle_y { 0 };
+    float _distance { 0 };
 };
 
 } // namespace TotoGL

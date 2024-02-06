@@ -37,9 +37,9 @@ public:
     float rotationY() const { return _rotation_y; }
 
 private:
-    glm::vec3 _position;
-    float _rotation_x;
-    float _rotation_y;
+    glm::vec3 _position { 0, 0, 0 };
+    float _rotation_x { 0 };
+    float _rotation_y { 0 };
 };
 
 } // namespace TotoGL
