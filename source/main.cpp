@@ -1,9 +1,5 @@
 #include <TotoGL/TotoGL.hpp>
 
-#include "TotoGL/CameraControl/FreeflyControl.hpp"
-#include "TotoGL/CameraControl/TrackballControl.hpp"
-#include "TotoGL/Window.hpp"
-
 #include <glm/glm.hpp>
 
 int main(int argc, const char* argv[]) {
@@ -32,7 +28,7 @@ int main(int argc, const char* argv[]) {
     auto& object = TotoGL::RenderObjectFactory::get(robj_id);
 
     auto camera = TotoGL::Camera::Perspective(fov, (float)width / height, 1.f, 100.f);
-    auto trackball = TotoGL::TrackballControl(0, 0, 2);
+    auto trackball = TotoGL::OrbitControl(0, 0, 2);
     auto freefly = TotoGL::FreeflyControl(0, 0);
     auto clock = TotoGL::Clock();
 

@@ -5,9 +5,9 @@
 
 namespace TotoGL {
 
-class TrackballControl {
+class OrbitControl {
 public:
-    TrackballControl(float angle_x, float angle_y, float distance)
+    OrbitControl(float angle_x, float angle_y, float distance)
         : _angle_x(angle_x)
         , _angle_y(angle_y)
         , _distance(distance) { }
