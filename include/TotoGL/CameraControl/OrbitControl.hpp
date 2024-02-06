@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TotoGL/RenderObject/Camera.hpp"
-#include <glm/ext/matrix_transform.hpp>
 
 namespace TotoGL {
 
@@ -14,13 +13,19 @@ public:
 
     void apply(Camera& camera) {
         camera.transformation().matrix() = //
-            glm::translate(glm::mat4(1), { 0, 0, -_distance }) * //
+            glm::translate(glm::mat4(1), _position) * //
+            glm::rotate(glm::mat4(1), _angle_y, { 0, 1, 0 }) * //
             glm::rotate(glm::mat4(1), _angle_x, { 1, 0, 0 }) * //
-            glm::rotate(glm::mat4(1), _angle_y, { 0, 1, 0 }) * glm::translate(glm::mat4(1), _position);
+            glm::translate(glm::mat4(1), { 0, 0, _distance });
     }
-    void move(float x, float y) {
+    void rotate(float x, float y) {
         _angle_x += x;
         _angle_y += y;
+        if (_angle_x > glm::half_pi<float>())
+            _angle_x = glm::half_pi<float>();
+        if (_angle_x < -glm::half_pi<float>())
+            _angle_x = -glm::half_pi<float>();
+        _angle_y = glm::mod(_angle_y + glm::pi<float>(), glm::tau<float>()) - glm::pi<float>();
     }
 
     glm::vec3& position() { return _position; }

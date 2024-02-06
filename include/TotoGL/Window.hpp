@@ -169,12 +169,8 @@ private:
             last_ypos = ypos;
         });
         glfwSetScrollCallback(_glfw_window, [](GLFWwindow* glwin, double xoffset, double yoffset) {
-            static double last_xoffset = xoffset, last_yoffset = yoffset;
-            double delta_xoffset = xoffset - last_xoffset, delta_yoffset = yoffset - last_yoffset;
             Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glwin));
-            window->emit(VectorEventName::SCROLL, VectorEvent { xoffset, yoffset, delta_xoffset, delta_yoffset });
-            last_xoffset = xoffset;
-            last_yoffset = yoffset;
+            window->emit(VectorEventName::SCROLL, VectorEvent { 0, 0, xoffset, yoffset });
         });
 
         glfwSetKeyCallback(_glfw_window, [](GLFWwindow* glwin, int key, int scancode, int action, int mods) {

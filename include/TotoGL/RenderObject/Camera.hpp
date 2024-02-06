@@ -29,26 +29,26 @@ public:
     }
 
     Camera& translate(const glm::vec3& translation) {
-        _view.translate(translation);
+        _transform.translate(translation);
         return *this;
     }
     Camera& scale(const glm::vec3& factor) {
-        _view.scale(factor);
+        _transform.scale(factor);
         return *this;
     }
     Camera& rotate(const float& angle, const glm::vec3& axis) {
-        _view.rotate(angle, axis);
+        _transform.rotate(angle, axis);
         return *this;
     }
-    Transformation& transformation() { return _view; }
+    Transformation& transformation() { return _transform; }
 
-    glm::mat4 view() const { return _view.matrix(); }
+    glm::mat4 view() const { return glm::inverse(_transform.matrix()); }
     glm::mat4 projection() const { return _projection; }
 
     glm::mat4 viewProjection() const { return projection() * view(); }
 
 private:
-    Transformation _view;
+    Transformation _transform;
     glm::mat4 _projection { 1.f };
 };
 
