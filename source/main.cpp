@@ -18,13 +18,13 @@ int main(int argc, const char* argv[]) {
     auto renderer = TotoGL::Renderer();
 
     const auto tex_id = TotoGL::TextureFactory::create(TotoGL::Texture(std::ifstream("assets/textures/XYZ.png")));
-    const auto mat_id = TotoGL::MaterialFactory::create(TotoGL::Material(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
+    const auto mat_id = TotoGL::ShaderMaterialFactory::create(TotoGL::ShaderMaterial(std::ifstream("assets/shader/shader.vert"), std::ifstream("assets/shader/shader.frag")));
     const auto mesh_id = TotoGL::MeshFactory::create(TotoGL::Mesh::cube());
     const auto robj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
 
     auto& texture = TotoGL::TextureFactory::get(tex_id);
     auto& mesh = TotoGL::MeshFactory::get(mesh_id);
-    auto& material = TotoGL::MaterialFactory::get(mat_id);
+    auto& material = TotoGL::ShaderMaterialFactory::get(mat_id);
     auto& object = TotoGL::RenderObjectFactory::get(robj_id);
 
     auto camera = TotoGL::Camera::Perspective(fov, (float)width / height, 1.f, 100.f);

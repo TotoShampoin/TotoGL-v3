@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Material.hpp"
 #include "Mesh.hpp"
+#include "ShaderMaterial.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Transformation.hpp"
 
@@ -9,7 +9,7 @@ namespace TotoGL {
 
 class RenderObject {
 public:
-    RenderObject(const MeshFactory::ObjectInstanceId& mesh, const MaterialFactory::ObjectInstanceId& material)
+    RenderObject(const MeshFactory::ObjectInstanceId& mesh, const ShaderMaterialFactory::ObjectInstanceId& material)
         : _mesh(mesh)
         , _material(material) { }
 
@@ -30,7 +30,7 @@ public:
     glm::mat4 transformMatrix() const { return _transform.matrix(); }
 
     void draw() {
-        auto& material = MaterialFactory::get(_material);
+        auto& material = ShaderMaterialFactory::get(_material);
         auto& mesh = MeshFactory::get(_mesh);
 
         material.use();
@@ -44,7 +44,7 @@ public:
 
 private:
     MeshFactory::ObjectInstanceId _mesh;
-    MaterialFactory::ObjectInstanceId _material;
+    ShaderMaterialFactory::ObjectInstanceId _material;
     Transformation _transform;
 };
 

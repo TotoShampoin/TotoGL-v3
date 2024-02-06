@@ -7,16 +7,16 @@
 
 namespace TotoGL {
 
-class Material {
+class ShaderMaterial {
 public:
     using ShaderType::FRAGMENT;
     using ShaderType::VERTEX;
-    Material()
-        : Material(
+    ShaderMaterial()
+        : ShaderMaterial(
             Shader<VERTEX>(),
             Shader<FRAGMENT>()) { }
 
-    Material(Shader<VERTEX>&& vertex, Shader<FRAGMENT>&& frament)
+    ShaderMaterial(Shader<VERTEX>&& vertex, Shader<FRAGMENT>&& frament)
         : _vertex(std::move(vertex))
         , _fragment(std::move(frament)) {
         compile();
@@ -53,6 +53,6 @@ private:
     ShaderProgram _program;
 };
 
-using MaterialFactory = Factory<TotoGL::Material>;
+using ShaderMaterialFactory = Factory<TotoGL::ShaderMaterial>;
 
 } // namespace TotoGL
