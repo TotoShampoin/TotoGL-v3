@@ -45,7 +45,7 @@ public:
     glm::mat4 view() const { return _view.matrix(); }
     glm::mat4 projection() const { return _projection; }
 
-    glm::mat4 viewProjection() const { return _projection * _view.matrix(); }
+    glm::mat4 viewProjection() const { return projection() * view(); }
 
 private:
     Transformation _view;
