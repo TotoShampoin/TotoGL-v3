@@ -1,5 +1,6 @@
 #include <TotoGL/TotoGL.hpp>
 
+#include "TotoGL/CameraControl/FreeflyControl.hpp"
 #include "TotoGL/CameraControl/TrackballControl.hpp"
 #include "TotoGL/Window.hpp"
 
@@ -31,11 +32,12 @@ int main(int argc, const char* argv[]) {
 
     auto camera = TotoGL::Camera::Perspective(glm::radians(70.f), (float)width / height, 1.f, 100.f);
     auto trackball = TotoGL::TrackballControl(0, 0, 2);
+    auto freefly = TotoGL::FreeflyControl(0, 0);
     auto clock = TotoGL::Clock();
 
     bool holding = false;
 
-    // object.translate({ 0, 0, -2 });
+    object.translate({ 0, 0, -2 });
 
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& event) {
         width = event.x;
@@ -55,6 +57,9 @@ int main(int argc, const char* argv[]) {
         trackball.move(
             event.dy / width * glm::pi<float>(),
             event.dx / height * glm::pi<float>());
+        freefly.move(
+            event.dx / width * glm::pi<float>(),
+            event.dy / height * glm::pi<float>());
     });
     material.uniform("u_projection", camera.projection());
     material.uniform("u_texture", texture);
@@ -73,7 +78,8 @@ int main(int argc, const char* argv[]) {
 
         auto [width, height] = window.size();
 
-        trackball.apply(camera);
+        // trackball.apply(camera);
+        freefly.apply(camera);
 
         auto modelview = camera.view() * object.transformMatrix();
         auto normal = glm::mat3(glm::transpose(glm::inverse(modelview)));
