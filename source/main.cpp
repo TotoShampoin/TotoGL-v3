@@ -16,6 +16,7 @@ int main(int argc, const char* argv[]) {
 
     int width = 640;
     int height = 480;
+    float fov = glm::radians(70.f);
 
     auto window = TotoGL::Window(width, height, "a title");
     auto renderer = TotoGL::Renderer();
@@ -30,20 +31,23 @@ int main(int argc, const char* argv[]) {
     auto& material = TotoGL::MaterialFactory::get(mat_id);
     auto& object = TotoGL::RenderObjectFactory::get(robj_id);
 
-    auto camera = TotoGL::Camera::Perspective(glm::radians(70.f), (float)width / height, 1.f, 100.f);
+    auto camera = TotoGL::Camera::Perspective(fov, (float)width / height, 1.f, 100.f);
     auto trackball = TotoGL::TrackballControl(0, 0, 2);
     auto freefly = TotoGL::FreeflyControl(0, 0);
     auto clock = TotoGL::Clock();
 
     bool holding = false;
 
-    object.translate({ 0, 0, -2 });
+    object.translate({ 0, 0, 0 });
+
+    trackball.position() = { 0, 0, 4 };
+    freefly.position() = { 0, 0, 4 };
 
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& event) {
         width = event.x;
         height = event.y;
         glViewport(0, 0, int(event.x), int(event.y));
-        camera.setPersective(glm::radians(70.f), (float)event.x / event.y, 1.f, 100.f);
+        camera.setPersective(fov, (float)event.x / event.y, 1.f, 100.f);
         material.uniform("u_projection", camera.projection());
     });
     window.on(MOUSE_BUTTON, [&](const TotoGL::InputEvent& event) {
@@ -55,11 +59,11 @@ int main(int argc, const char* argv[]) {
         if (!holding)
             return;
         trackball.move(
-            event.dy / width * glm::pi<float>(),
-            event.dx / height * glm::pi<float>());
+            event.dy / height * fov,
+            event.dx / height * fov);
         freefly.move(
-            event.dx / width * glm::pi<float>(),
-            event.dy / height * glm::pi<float>());
+            event.dx / height * fov,
+            event.dy / height * fov);
     });
     material.uniform("u_projection", camera.projection());
     material.uniform("u_texture", texture);
