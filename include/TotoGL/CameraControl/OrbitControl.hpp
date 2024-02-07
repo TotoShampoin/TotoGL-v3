@@ -7,41 +7,44 @@ namespace TotoGL {
 class OrbitControl {
 public:
     OrbitControl(float angle_x, float angle_y, float distance)
-        : _angle_x(angle_x)
-        , _angle_y(angle_y)
+        : _alpha(angle_x)
+        , _beta(angle_y)
         , _distance(distance) { }
 
     void apply(Camera& camera) {
-        camera.transformation().matrix() = //
-            glm::translate(glm::mat4(1), _position) * //
-            glm::rotate(glm::mat4(1), _angle_y, { 0, 1, 0 }) * //
-            glm::rotate(glm::mat4(1), _angle_x, { 1, 0, 0 }) * //
-            glm::translate(glm::mat4(1), { 0, 0, _distance });
+        camera.position() = _position + //
+            glm::vec3(
+                -glm::cos(_alpha) * glm::cos(_beta) * _distance,
+                -glm::sin(_alpha) * _distance,
+                glm::cos(_alpha) * glm::sin(_beta) * _distance);
+        camera.lookAt(_position, { 0, 1, 0 });
     }
     void rotate(float x, float y) {
-        _angle_x += x;
-        _angle_y += y;
-        if (_angle_x > glm::half_pi<float>())
-            _angle_x = glm::half_pi<float>();
-        if (_angle_x < -glm::half_pi<float>())
-            _angle_x = -glm::half_pi<float>();
-        _angle_y = glm::mod(_angle_y + glm::pi<float>(), glm::tau<float>()) - glm::pi<float>();
+        static constexpr auto HALF_PI = glm::half_pi<float>();
+        static constexpr auto EPSILON = glm::epsilon<float>();
+        _alpha += x;
+        _beta += y;
+        if (_alpha > HALF_PI - EPSILON)
+            _alpha = HALF_PI - EPSILON;
+        if (_alpha < -HALF_PI + EPSILON)
+            _alpha = -HALF_PI + EPSILON;
+        _beta = glm::mod(_beta + glm::pi<float>(), glm::tau<float>()) - glm::pi<float>();
     }
 
     glm::vec3& position() { return _position; }
     glm::vec3 position() const { return _position; }
 
-    float& angle_x() { return _angle_x; }
-    float angle_x() const { return _angle_x; }
-    float& angle_y() { return _angle_y; }
-    float angle_y() const { return _angle_y; }
+    float& angle_x() { return _alpha; }
+    float angle_x() const { return _alpha; }
+    float& angle_y() { return _beta; }
+    float angle_y() const { return _beta; }
     float& distance() { return _distance; }
     float distance() const { return _distance; }
 
 private:
     glm::vec3 _position { 0, 0, 0 };
-    float _angle_x { 0 };
-    float _angle_y { 0 };
+    float _alpha { 0 };
+    float _beta { 0 };
     float _distance { 0 };
 };
 
