@@ -3,6 +3,9 @@
 #include <GL/glew.h>
 #include <stdexcept>
 
+#include "TotoGL/RenderObject/Camera.hpp"
+#include "TotoGL/RenderObject/RenderObject.hpp"
+
 namespace TotoGL {
 
 class Renderer {
@@ -13,7 +16,15 @@ public:
     Renderer(const Renderer&) = delete;
     ~Renderer() { }
 
-    void render() { }
+    void render(TotoGL::RenderObject& object, TotoGL::Camera& camera) {
+        auto modelview = camera.view() * object.transformMatrix();
+        auto normal = glm::mat3(glm::transpose(glm::inverse(modelview)));
+        auto& material = object.material();
+        material.uniform("u_projection", camera.projection());
+        material.uniform("u_modelview", modelview);
+        material.uniform("u_normal", normal);
+        object.draw();
+    }
 
 private:
     void init() {
