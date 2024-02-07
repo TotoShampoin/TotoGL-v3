@@ -1,12 +1,5 @@
-// #include <TotoGL/TotoGL.hpp>
+#include <TotoGL/TotoGL.hpp>
 
-#include "TotoGL/CameraControl/OrbitControl.hpp"
-#include "TotoGL/Primitives/Clock.hpp"
-#include "TotoGL/RenderObject/Camera.hpp"
-#include "TotoGL/RenderObject/RenderObject.hpp"
-#include "TotoGL/RenderObject/ShaderMaterial.hpp"
-#include "TotoGL/Renderer.hpp"
-#include "TotoGL/Window.hpp"
 #include <glm/glm.hpp>
 
 void event(

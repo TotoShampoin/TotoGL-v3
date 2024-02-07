@@ -1,12 +1,5 @@
 #define TOTOGL_IMPLEMENTATIONS
-
-#include "TotoGL/CameraControl/OrbitControl.hpp"
-#include "TotoGL/Primitives/Texture.hpp"
-#include "TotoGL/RenderObject/Camera.hpp"
-#include "TotoGL/RenderObject/RenderObject.hpp"
-#include "TotoGL/RenderObject/ShaderMaterial.hpp"
-#include "TotoGL/Window.hpp"
-// #include <TotoGL/TotoGL.hpp>
+#include <TotoGL/TotoGL.hpp>
 
 void event(
     TotoGL::Window& window,
