@@ -48,6 +48,9 @@ public:
     glm::vec3& rotation() { return _transform.rotation(); }
     glm::vec3& scaling() { return _transform.scaling(); }
 
+    Mesh& mesh() { return MeshFactory::get(_mesh); }
+    ShaderMaterial& material() { return ShaderMaterialFactory::get(_material); }
+
 private:
     MeshFactory::ObjectInstanceId _mesh;
     ShaderMaterialFactory::ObjectInstanceId _material;
