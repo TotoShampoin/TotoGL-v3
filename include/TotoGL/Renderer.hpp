@@ -16,6 +16,15 @@ public:
     Renderer(const Renderer&) = delete;
     ~Renderer() { }
 
+    void clearColor(const glm::vec4& color) {
+        glClearColor(color.r, color.g, color.b, color.a);
+    }
+    void clear(bool color = true, bool depth = true, bool stencil = true) {
+        glClear( //
+            (color ? GL_COLOR_BUFFER_BIT : 0) | //
+            (depth ? GL_DEPTH_BUFFER_BIT : 0) | //
+            (stencil ? GL_STENCIL_BUFFER_BIT : 0));
+    }
     void render(TotoGL::RenderObject& object, TotoGL::Camera& camera) {
         auto modelview = camera.view() * object.transformMatrix();
         auto normal = glm::mat3(glm::transpose(glm::inverse(modelview)));

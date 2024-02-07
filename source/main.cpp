@@ -61,6 +61,7 @@ int main(int /* argc */, const char** /* argv */) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    renderer.clearColor({ 0, 0, 0, 1 });
     while (!window.shouldClose()) {
         float time = clock.getTime();
         float delta = clock.getDeltaTime();
@@ -71,9 +72,7 @@ int main(int /* argc */, const char** /* argv */) {
         orbit.apply(camera);
 
         window.draw([&]() {
-            glClearColor(.25, 0., .25, 1.);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+            renderer.clear();
             for (int i = 0; i < 6; i++) {
                 auto& object = objects[i].get();
                 object.rotation() += glm::vec3(1, 1, 1) * delta;
