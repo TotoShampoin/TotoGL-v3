@@ -27,7 +27,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL glfw GLU GLEW glm)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_VENDOR_DIR})
+# target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_VENDOR_DIR})
 
 
 add_executable(${PROJECT_NAME}_test ${TOTOGL_SOURCE_FILES})
@@ -37,14 +37,14 @@ set_target_properties(${PROJECT_NAME}_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY $
 set_target_properties(${PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME}_test PUBLIC ${TOTOGL_INCLUDE_DIR})
+# target_include_directories(${PROJECT_NAME}_test PUBLIC ${TOTOGL_INCLUDE_DIR})
 
 # Copy the assets and the shaders to the output folder (where the executable is created)
 include("CMakeUtils/files_and_folders.cmake")
 Cool__target_copy_folder(${PROJECT_NAME}_test assets)
 
 if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W3)
+    target_compile_options(${PROJECT_NAME}_test PRIVATE /W3)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -pedantic-errors)
+    target_compile_options(${PROJECT_NAME}_test PRIVATE -Wall -Wextra -Wpedantic -pedantic-errors)
 endif()

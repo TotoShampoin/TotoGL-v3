@@ -1,11 +1,11 @@
 #pragma once
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "TotoGL/Impl.hpp"
 
 #include "TotoGL/GPUPointer/Texture.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include <fstream>
+#include <stdexcept>
 
 namespace TotoGL {
 
@@ -18,6 +18,9 @@ public:
     }
 
     void load(std::ifstream&& file) {
+#ifndef TOTOGL_IMPLEMENTATIONS
+        throw std::runtime_error("Texture::load not implemented, make sure to define TOTOGL_IMPLEMENTATIONS first.");
+#else
         auto str = std::string(
             std::istreambuf_iterator<char>(file),
             std::istreambuf_iterator<char>());
@@ -48,6 +51,7 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         unbind();
         stbi_image_free(data);
+#endif
     }
 
     void bind() {
