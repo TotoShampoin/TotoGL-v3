@@ -18,9 +18,7 @@ public:
     }
 
     void load(std::ifstream&& file) {
-#ifndef TOTOGL_IMPLEMENTATIONS
-        throw std::runtime_error("Texture::load not implemented, make sure to define TOTOGL_IMPLEMENTATIONS first.");
-#else
+#ifdef TOTOGL_IMPLEMENTATIONS
         auto str = std::string(
             std::istreambuf_iterator<char>(file),
             std::istreambuf_iterator<char>());
@@ -51,6 +49,8 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         unbind();
         stbi_image_free(data);
+#else
+        throw std::runtime_error("Texture::load not implemented, make sure to define TOTOGL_IMPLEMENTATIONS first.");
 #endif
     }
 
