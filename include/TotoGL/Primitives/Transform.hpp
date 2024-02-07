@@ -7,7 +7,6 @@
 
 namespace TotoGL {
 
-// TODO: This don't work, find out why
 class Transform {
 public:
     glm::mat4 matrix() const {
