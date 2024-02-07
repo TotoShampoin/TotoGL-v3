@@ -73,4 +73,8 @@ private:
 template <ShaderType type>
 using ShaderFactory = Factory<Shader<type>>;
 
+using VertexShader = Shader<ShaderType::VERTEX>;
+using FramgentShader = Shader<ShaderType::FRAGMENT>;
+using ComputeShader = Shader<ShaderType::COMPUTE>;
+
 } // namespace TotoGL
