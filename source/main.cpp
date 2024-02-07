@@ -67,7 +67,6 @@ int main(int /* argc */, const char** /* argv */) {
         // auto [width, height] = window.size();
 
         material.uniform("u_time", time);
-        material.uniform("u_projection", camera.projection());
 
         orbit.apply(camera);
 
@@ -77,13 +76,8 @@ int main(int /* argc */, const char** /* argv */) {
 
             for (int i = 0; i < 6; i++) {
                 auto& object = objects[i].get();
-                auto modelview = camera.view() * object.transformMatrix();
-                auto normal = glm::mat3(glm::transpose(glm::inverse(modelview)));
                 object.rotation() += glm::vec3(1, 1, 1) * delta;
-
-                material.uniform("u_modelview", modelview);
-                material.uniform("u_normal", normal);
-                objects[i].get().draw();
+                renderer.render(object, camera);
             }
         });
     }
