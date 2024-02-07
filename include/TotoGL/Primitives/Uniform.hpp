@@ -24,7 +24,7 @@ using UniformVariant = std::variant<
 
 class Uniform {
 public:
-    Uniform(const ProgramId& program, const std::string& name, const GLuint& texture_unit = 0)
+    Uniform(const ProgramId& program, const std::string& name)
         : _location(glGetUniformLocation(program.id(), name.c_str())) { }
 
     void operator()(int value) {
