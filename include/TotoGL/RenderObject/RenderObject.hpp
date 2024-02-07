@@ -38,7 +38,7 @@ public:
         _transform.rotate(angle, axis);
         return *this;
     }
-    void lookAt(const glm::vec3& target, const glm::vec3& up) {
+    void lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 }) {
         _transform.lookAt(target, up);
     }
 

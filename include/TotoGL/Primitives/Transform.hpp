@@ -36,7 +36,7 @@ public:
         return *this;
     }
 
-    Transform& lookAt(const glm::vec3& target, const glm::vec3& up) {
+    Transform& lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 }) {
         auto direction = glm::inverse(glm::lookAt(_translation, target, up));
         glm::extractEulerAngleXYZ(direction, _rotation.x, _rotation.y, _rotation.z);
         return *this;

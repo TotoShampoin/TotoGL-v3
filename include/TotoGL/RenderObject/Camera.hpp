@@ -40,7 +40,7 @@ public:
     Transform& transformation() { return _transform; }
     glm::vec3& position() { return _transform.translation(); }
     glm::vec3& rotation() { return _transform.rotation(); }
-    void lookAt(const glm::vec3& target, const glm::vec3& up) {
+    void lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 }) {
         _transform.lookAt(target, up);
     }
 
