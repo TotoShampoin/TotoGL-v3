@@ -4,7 +4,7 @@
 
 namespace TotoGL {
 
-using Seconds = double;
+using Seconds = float;
 
 class Clock {
 public:
