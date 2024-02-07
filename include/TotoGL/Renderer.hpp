@@ -24,6 +24,7 @@ public:
             (color ? GL_COLOR_BUFFER_BIT : 0) | //
             (depth ? GL_DEPTH_BUFFER_BIT : 0) | //
             (stencil ? GL_STENCIL_BUFFER_BIT : 0));
+        glEnable(GL_DEPTH_TEST);
     }
     void render(TotoGL::RenderObject& object, TotoGL::Camera& camera) {
         auto modelview = camera.view() * object.transformMatrix();
