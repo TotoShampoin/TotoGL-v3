@@ -3,7 +3,7 @@
 #include "Mesh.hpp"
 #include "ShaderMaterial.hpp"
 #include "TotoGL/Misc/Factory.hpp"
-#include "TotoGL/Primitives/Transformation.hpp"
+#include "TotoGL/Primitives/Transform.hpp"
 
 namespace TotoGL {
 
@@ -12,22 +12,6 @@ public:
     RenderObject(const MeshFactory::ObjectInstanceId& mesh, const ShaderMaterialFactory::ObjectInstanceId& material)
         : _mesh(mesh)
         , _material(material) { }
-
-    RenderObject& translate(const glm::vec3& translation) {
-        _transform.translate(translation);
-        return *this;
-    }
-    RenderObject& scale(const glm::vec3& factor) {
-        _transform.scale(factor);
-        return *this;
-    }
-    RenderObject& rotate(const float& angle, const glm::vec3& axis) {
-        _transform.rotate(angle, axis);
-        return *this;
-    }
-
-    Transformation& transformation() { return _transform; }
-    glm::mat4 transformMatrix() const { return _transform.matrix(); }
 
     void draw() {
         auto& material = ShaderMaterialFactory::get(_material);
@@ -42,10 +26,32 @@ public:
         Mesh::unbind();
     }
 
+    RenderObject& translate(const glm::vec3& translation) {
+        _transform.translate(translation);
+        return *this;
+    }
+    RenderObject& scale(const glm::vec3& factor) {
+        _transform.scale(factor);
+        return *this;
+    }
+    RenderObject& rotate(const float& angle, const glm::vec3& axis) {
+        _transform.rotate(angle, axis);
+        return *this;
+    }
+    void lookAt(const glm::vec3& target, const glm::vec3& up) {
+        _transform.lookAt(target, up);
+    }
+
+    Transform& transformation() { return _transform; }
+    glm::mat4 transformMatrix() const { return _transform.matrix(); }
+    glm::vec3& position() { return _transform.translation(); }
+    glm::vec3& rotation() { return _transform.rotation(); }
+    glm::vec3& scaling() { return _transform.scaling(); }
+
 private:
     MeshFactory::ObjectInstanceId _mesh;
     ShaderMaterialFactory::ObjectInstanceId _material;
-    Transformation _transform;
+    Transform _transform;
 };
 
 using RenderObjectFactory = Factory<RenderObject>;

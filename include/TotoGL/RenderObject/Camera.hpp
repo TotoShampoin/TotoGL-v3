@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TotoGL/Primitives/Transformation.hpp"
+#include "TotoGL/Primitives/Transform.hpp"
 #include <glm/glm.hpp>
 
 namespace TotoGL {
@@ -32,15 +32,17 @@ public:
         _transform.translate(translation);
         return *this;
     }
-    Camera& scale(const glm::vec3& factor) {
-        _transform.scale(factor);
-        return *this;
-    }
     Camera& rotate(const float& angle, const glm::vec3& axis) {
         _transform.rotate(angle, axis);
         return *this;
     }
-    Transformation& transformation() { return _transform; }
+
+    Transform& transformation() { return _transform; }
+    glm::vec3& position() { return _transform.translation(); }
+    glm::vec3& rotation() { return _transform.rotation(); }
+    void lookAt(const glm::vec3& target, const glm::vec3& up) {
+        _transform.lookAt(target, up);
+    }
 
     glm::mat4 view() const { return glm::inverse(_transform.matrix()); }
     glm::mat4 projection() const { return _projection; }
@@ -48,7 +50,7 @@ public:
     glm::mat4 viewProjection() const { return projection() * view(); }
 
 private:
-    Transformation _transform;
+    Transform _transform;
     glm::mat4 _projection { 1.f };
 };
 
