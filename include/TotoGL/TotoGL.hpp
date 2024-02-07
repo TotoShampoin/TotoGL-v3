@@ -1,6 +1,5 @@
 #pragma once
 
-// #include <TotoGL/CameraControl/FreeflyControl.hpp>
 #include <TotoGL/CameraControl/OrbitControl.hpp>
 #include <TotoGL/GPUPointer/Buffers.hpp>
 #include <TotoGL/GPUPointer/GPUPointer.hpp>
