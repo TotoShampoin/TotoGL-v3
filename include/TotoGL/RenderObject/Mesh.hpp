@@ -10,6 +10,21 @@ namespace TotoGL {
 
 class Mesh {
 public:
+    enum class CullFace {
+        FRONT = GL_FRONT,
+        BACK = GL_BACK,
+        DOUBLE = GL_FRONT_AND_BACK
+    };
+    enum class DrawMethod {
+        POINTS = GL_POINTS,
+        LINES = GL_LINES,
+        LINE_STRIP = GL_LINE_STRIP,
+        LINE_LOOP = GL_LINE_LOOP,
+        TRIANGLES = GL_TRIANGLES,
+        TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+        TRIANGLE_FAN = GL_TRIANGLE_FAN,
+    };
+
     Mesh() {
         glBindVertexArray(_vao.id());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo.id());
@@ -41,7 +56,9 @@ public:
 
     void draw() {
         bind();
-        glDrawElements(GL_TRIANGLES, _index_count, GL_UNSIGNED_INT, 0);
+        glEnable(GL_CULL_FACE);
+        glCullFace(static_cast<GLenum>(_cull_face));
+        glDrawElements(static_cast<GLenum>(_draw_method), _index_count, GL_UNSIGNED_INT, 0);
         unbind();
     }
 
@@ -111,11 +128,17 @@ public:
         return Mesh(vertices, triangles);
     }
 
+    CullFace& cull_face() { return _cull_face; };
+    DrawMethod& draw_method() { return _draw_method; };
+
 private:
     VboId _vbo;
     IboId _ibo;
     VaoId _vao;
     size_t _vertex_count, _index_count;
+
+    CullFace _cull_face = CullFace::FRONT;
+    DrawMethod _draw_method = DrawMethod::TRIANGLES;
 
     static constexpr uint VERTEX_ATTR_POSITION = 0;
     static constexpr uint VERTEX_ATTR_NORMAL = 1;
