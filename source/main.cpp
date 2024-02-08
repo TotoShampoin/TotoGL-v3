@@ -1,4 +1,3 @@
-#include "TotoGL/RenderObject/Mesh.hpp"
 #include <TotoGL/TotoGL.hpp>
 
 #include <glm/glm.hpp>
