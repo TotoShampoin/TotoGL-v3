@@ -14,11 +14,12 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 
-file(GLOB_RECURSE TOTOGL_INCLUDE_FILES CONFIGURE_DEPENDS ${TOTOGL_INCLUDE_DIR}/*.hpp ${TOTOGL_INCLUDE_DIR}/*.tpp)
-file(GLOB_RECURSE TOTOGL_SOURCE_FILES CONFIGURE_DEPENDS ${TOTOGL_SOURCE_DIR}/*.cpp)
-
 include(CMakeUtils/files_and_folders.cmake)
 include(${TOTOGL_VENDOR_DIR}/imgui.cmake)
+
+
+file(GLOB_RECURSE TOTOGL_INCLUDE_FILES CONFIGURE_DEPENDS ${TOTOGL_INCLUDE_DIR}/*.hpp ${TOTOGL_INCLUDE_DIR}/*.tpp)
+file(GLOB_RECURSE TOTOGL_SOURCE_FILES CONFIGURE_DEPENDS ${TOTOGL_SOURCE_DIR}/*.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${TOTOGL_INCLUDE_FILES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
@@ -30,6 +31,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL glfw GLU GLEW glm imgui)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_VENDOR_DIR}/includes)
+target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_INCLUDE_DIR})
 
 
 add_executable(${PROJECT_NAME}_test ${TOTOGL_SOURCE_FILES})
@@ -37,6 +39,8 @@ target_compile_features(${PROJECT_NAME}_test PRIVATE cxx_std_23)
 
 set_target_properties(${PROJECT_NAME}_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TOTOGL_BINARY_DIR})
 set_target_properties(${PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE CXX)
+
+target_link_libraries(${PROJECT_NAME}_test PUBLIC totogl)
 
 Cool__target_copy_folder(${PROJECT_NAME}_test assets)
 
