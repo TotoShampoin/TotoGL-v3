@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <stdexcept>
 
-#include "TotoGL/RenderObject/Camera.hpp"
-#include "TotoGL/RenderObject/RenderObject.hpp"
+#include "RenderObject/Camera.hpp"
+#include "RenderObject/RenderObject.hpp"
 
 namespace TotoGL {
 
