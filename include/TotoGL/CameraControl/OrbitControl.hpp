@@ -38,6 +38,7 @@ public:
     void bindEvents(Window& window) {
         using InputEventName::MOUSE_BUTTON;
         using VectorEventName::CURSOR_POSITION;
+        static constexpr auto PI = glm::pi<float>();
 
         static bool is_holding;
 
@@ -49,7 +50,8 @@ public:
         window.on(CURSOR_POSITION, [&](const VectorEvent& event) {
             if (!is_holding)
                 return;
-            rotate(event.dx, event.dy);
+            auto [width, height] = window.size();
+            rotate(event.dx / height * PI, event.dy / height * PI);
         });
     }
 
