@@ -7,6 +7,7 @@
 #include <TotoGL/GPUPointer/GPUPointer.hpp>
 #include <TotoGL/GPUPointer/Shader.hpp>
 #include <TotoGL/GPUPointer/Texture.hpp>
+#include <TotoGL/ImGui.hpp>
 #include <TotoGL/Misc/EventListener.hpp>
 #include <TotoGL/Misc/Factory.hpp>
 #include <TotoGL/Primitives/Clock.hpp>
