@@ -51,7 +51,7 @@ public:
             if (!is_holding)
                 return;
             auto [width, height] = window.size();
-            rotate(event.dx / height * PI, event.dy / height * PI);
+            rotate(event.dy / height * PI, event.dx / height * PI);
         });
     }
 
