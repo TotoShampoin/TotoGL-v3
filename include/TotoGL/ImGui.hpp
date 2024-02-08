@@ -9,24 +9,18 @@
 
 namespace TotoGL {
 
-class ImGUI {
-public:
-    ImGUI(Window& window) {
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        (void)io;
+void initImGui(Window& window) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
 
-        ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow(), true);
-        ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 460");
 
-        auto& style = ImGui::GetStyle();
-        style.FrameRounding = 2.;
-        style.WindowRounding = 4.;
-    }
-    ~ImGUI() = default;
-
-private:
-};
+    auto& style = ImGui::GetStyle();
+    style.FrameRounding = 2.;
+    style.WindowRounding = 4.;
+}
 
 } // namespace TotoGL
