@@ -1,3 +1,4 @@
+#include "TotoGL/RenderObject/Mesh.hpp"
 #include <TotoGL/TotoGL.hpp>
 
 #include <glm/glm.hpp>
@@ -34,7 +35,10 @@ int main(int /* argc */, const char** /* argv */) {
     auto objects = std::vector<std::reference_wrapper<TotoGL::RenderObject>>();
 
     for (int i = 0; i < 6; i++) {
-        objects.push_back(makeObject());
+        auto& obj = makeObject();
+        obj.mesh().cull_face() = TotoGL::Mesh::CullFace::FRONT;
+        obj.mesh().draw_method() = TotoGL::Mesh::DrawMethod::LINES;
+        objects.push_back(obj);
     }
 
     objects[0].get().translate({ 0, 0, 2 });
@@ -54,8 +58,8 @@ int main(int /* argc */, const char** /* argv */) {
 
     event(window, camera, holding, orbit, velocity);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_FRONT);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
