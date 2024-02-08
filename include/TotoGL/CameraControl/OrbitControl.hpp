@@ -1,6 +1,7 @@
 #pragma once
 
 #include <TotoGL/GL.hpp>
+#include <imgui.h>
 
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/Window.hpp"
@@ -48,6 +49,10 @@ public:
             }
         });
         window.on(CURSOR_POSITION, [&](const VectorEvent& event) {
+            if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+                is_holding = false;
+                return;
+            }
             if (!is_holding)
                 return;
             auto [width, height] = window.size();

@@ -9,7 +9,7 @@
 
 namespace TotoGL {
 
-void initImGui(Window& window) {
+inline void initImGui(Window& window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
