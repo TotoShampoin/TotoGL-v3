@@ -1,5 +1,7 @@
 #include <TotoGL/TotoGL.hpp>
 
+#include <TotoGL/RenderObject/Light.hpp>
+#include <glm/geometric.hpp>
 #include <glm/glm.hpp>
 
 void event(
@@ -11,6 +13,7 @@ void event(
 
 TotoGL::ShaderMaterialFactory::ObjectInstanceId getMaterial();
 TotoGL::RenderObject& makeObject();
+TotoGL::RenderObject& makeHelper();
 
 int main(int /* argc */, const char** /* argv */) {
     using TotoGL::ShaderType::FRAGMENT;
@@ -29,23 +32,34 @@ int main(int /* argc */, const char** /* argv */) {
     auto window = TotoGL::Window(WIDTH, HEIGHT, "a title");
     auto renderer = TotoGL::Renderer();
 
-    auto& material = TotoGL::ShaderMaterialFactory::get(getMaterial());
-
-    auto objects = std::vector<std::reference_wrapper<TotoGL::RenderObject>>();
+    auto kirbies = std::vector<std::reference_wrapper<TotoGL::RenderObject>>();
 
     for (int i = 0; i < 6; i++) {
-        auto& obj = makeObject();
-        obj.mesh().cull_face() = TotoGL::Mesh::CullFace::FRONT;
-        obj.mesh().draw_method() = TotoGL::Mesh::DrawMethod::LINES;
-        objects.push_back(obj);
+        auto& kirby = makeObject();
+        kirbies.push_back(kirby);
     }
 
-    objects[0].get().translate({ 0, 0, 2 });
-    objects[1].get().translate({ 0, 0, -2 });
-    objects[2].get().translate({ 0, 2, 0 });
-    objects[3].get().translate({ 0, -2, 0 });
-    objects[4].get().translate({ 2, 0, 0 });
-    objects[5].get().translate({ -2, 0, 0 });
+    kirbies[0].get().translate({ 0, 0, 2 });
+    kirbies[1].get().translate({ 0, 0, -2 });
+    kirbies[2].get().translate({ 0, 2, 0 });
+    kirbies[3].get().translate({ 0, -2, 0 });
+    kirbies[4].get().translate({ 2, 0, 0 });
+    kirbies[5].get().translate({ -2, 0, 0 });
+
+    auto ambient = TotoGL::Light(glm::vec3(1, 1, 1), .25, TotoGL::LightType::AMBIENT);
+    auto dir_light = TotoGL::Light(glm::vec3(1, 1, 1), 1., TotoGL::LightType::DIRECTIONAL);
+    dir_light.position() = { 0, 3, 5 };
+    dir_light.transformation().lookAt({ 0, 0, 0 });
+
+    {
+        auto& light_helper = makeHelper();
+        light_helper.scaling() = { .5, .5, .5 };
+        light_helper.position() = dir_light.position();
+        light_helper.rotation() = dir_light.direction();
+        kirbies.push_back(light_helper);
+    }
+
+    auto& material = kirbies[0].get().material();
 
     auto camera = TotoGL::Camera::Perspective(FOV, (float)WIDTH / HEIGHT, .1f, 100.f);
     auto clock = TotoGL::Clock();
@@ -63,23 +77,32 @@ int main(int /* argc */, const char** /* argv */) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    material.uniform("u_amb_light.color", ambient.color());
+    material.uniform("u_amb_light.strength", ambient.strength());
+    material.uniform("u_dir_light.color", dir_light.color());
+    material.uniform("u_dir_light.strength", dir_light.strength());
+
     renderer.clearColor({ 0, 0, 0, 1 });
     while (!window.shouldClose()) {
         float time = clock.getTime();
         float delta = clock.getDeltaTime();
         // auto [width, height] = window.size();
 
+        orbit.apply(camera);
+
         material.uniform("u_time", time);
 
-        orbit.apply(camera);
+        material.uniform("u_dir_light.direction",
+            glm::mat3(glm::transpose(glm::inverse(camera.view()))) * dir_light.direction());
 
         window.draw([&]() {
             renderer.clear();
             for (int i = 0; i < 6; i++) {
-                auto& object = objects[i].get();
+                auto& object = kirbies[i].get();
                 object.rotation() += glm::vec3(1, 1, 1) * delta;
                 renderer.render(object, camera);
             }
+            renderer.render(kirbies[6].get(), camera);
         });
     }
 
