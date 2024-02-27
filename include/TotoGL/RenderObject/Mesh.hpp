@@ -4,6 +4,7 @@
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Vertex.hpp"
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 #include <vector>
 
 namespace TotoGL {
@@ -126,6 +127,39 @@ public:
             20, 22, 21, 20, 23, 22, // bottom
         };
         return Mesh(vertices, triangles);
+    }
+
+    static Mesh sphere(float radius = 1.f, int x_segments = 64, int y_segments = 64) {
+        static const float PI = glm::pi<float>();
+        static const float TAU = glm::tau<float>();
+
+        std::vector<VertexType> vertices;
+        std::vector<uint> indices;
+        for (int y = 0; y <= y_segments; y++) {
+            for (int x = 0; x <= x_segments; x++) {
+                glm::vec2 uv = {
+                    (float)x / x_segments,
+                    (float)y / y_segments
+                };
+                glm::vec3 coord = {
+                    glm::cos(uv.x * TAU) * glm::sin(uv.y * PI),
+                    glm::cos(uv.y * PI),
+                    glm::sin(uv.x * TAU) * glm::sin(uv.y * PI),
+                };
+                vertices.push_back({ coord * radius, coord, uv });
+
+                if (x < x_segments && y < y_segments) {
+                    indices.push_back((y + 1) * (x_segments + 1) + x);
+                    indices.push_back(y * (x_segments + 1) + x + 1);
+                    indices.push_back(y * (x_segments + 1) + x);
+
+                    indices.push_back((y + 1) * (x_segments + 1) + x);
+                    indices.push_back((y + 1) * (x_segments + 1) + x + 1);
+                    indices.push_back(y * (x_segments + 1) + x + 1);
+                }
+            }
+        }
+        return Mesh(vertices, indices);
     }
 
     CullFace& cull_face() { return _cull_face; };
