@@ -49,7 +49,7 @@ public:
             }
         });
         window.on(CURSOR_POSITION, [&](const VectorEvent& event) {
-            if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+            if (ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)) {
                 is_holding = false;
                 return;
             }
