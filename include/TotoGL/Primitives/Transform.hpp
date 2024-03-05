@@ -18,7 +18,7 @@ public:
         return *this;
     }
     Transform& rotate(const float& angle, const glm::vec3& axis) {
-        glm::mat4 rotated = glm::rotate(rotationMatrix(), angle, axis);
+        glm::mat4 rotated = glm::rotate(glm::mat4(1), angle, axis) * rotationMatrix();
         glm::extractEulerAngleXYZ(rotated, _rotation.x, _rotation.y, _rotation.z);
         return *this;
     }

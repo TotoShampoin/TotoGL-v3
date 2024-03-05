@@ -46,17 +46,17 @@ int main(int /* argc */, const char** /* argv */) {
     kirbies[4].get().translate({ 2, 0, 0 });
     kirbies[5].get().translate({ -2, 0, 0 });
 
-    auto ambient = TotoGL::Light(glm::vec3(1, 1, 1), .25, TotoGL::LightType::AMBIENT);
-    auto dir_light = TotoGL::Light(glm::vec3(1, 1, 1), 1., TotoGL::LightType::DIRECTIONAL);
-    dir_light.position() = { 0, 3, 5 };
-    dir_light.transformation().lookAt({ 0, 0, 0 });
-    auto point_light = TotoGL::Light(glm::vec3(1, 1, 1), 1., TotoGL::LightType::POINT);
-    point_light.position() = { 2, 2, 2 };
+    auto lights = std::vector<TotoGL::Light>();
+    {
+        auto ambient = TotoGL::Light(glm::vec3(1, 1, 1), .25, TotoGL::LightType::AMBIENT);
+        auto dirlight = TotoGL::Light(glm::vec3(1, 1, 1), 1, TotoGL::LightType::DIRECTIONAL);
+        dirlight.position() = { 3, 3, 3 };
+        dirlight.transformation().lookAt({ 0, 0, 0 });
 
-    auto& light_helper = makeHelper();
-    light_helper.scaling() = { .5, .5, .5 };
-    light_helper.position() = point_light.position();
-    // light_helper.rotation() = dir_light.direction();
+        lights.push_back(ambient);
+        lights.push_back(dirlight);
+    }
+    auto light_helper = makeHelper();
 
     auto& material = kirbies[0].get().material();
 
@@ -76,13 +76,11 @@ int main(int /* argc */, const char** /* argv */) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    material.uniform("u_amb_light.color", ambient.color());
-    material.uniform("u_amb_light.strength", ambient.strength());
-    material.uniform("u_dir_light.color", dir_light.color());
-    material.uniform("u_dir_light.strength", dir_light.strength());
-
-    material.uniform("u_point_light.color", point_light.color());
-    material.uniform("u_point_light.strength", point_light.strength());
+    // material.uniform("u_light.color", ambient.color());
+    // material.uniform("u_light.strength", ambient.strength());
+    // material.uniform("u_light[0].color", light.color());
+    // material.uniform("u_light[0].strength", light.strength());
+    // material.uniform("u_light[0].type", static_cast<int>(light.type()));
 
     renderer.clearColor({ 0, 0, 0, 1 });
     while (!window.shouldClose()) {
@@ -92,20 +90,26 @@ int main(int /* argc */, const char** /* argv */) {
 
         orbit.apply(camera);
 
+        // light.rotate(delta, { 0, 1, 0 });
+        // light_helper.rotate(delta, { 0, 1, 0 });
+
         material.uniform("u_time", time);
 
-        material.uniform("u_dir_light.direction",
-            glm::mat3(glm::transpose(glm::inverse(camera.view()))) * dir_light.direction());
-        material.uniform("u_point_light.position",
-            glm::vec3(camera.view() * glm::vec4(point_light.position(), 1)));
+        // material.uniform("u_light[0].pos_or_dir",
+        //     glm::mat3(glm::transpose(glm::inverse(camera.view()))) * light.direction());
+        // material.uniform("u_light.pos_or_dir",
+        //     glm::vec3(camera.view() * glm::vec4(point_light.position(), 1)));
 
         window.draw([&]() {
             renderer.clear();
             for (int i = 0; i < 6; i++) {
                 auto& object = kirbies[i].get();
-                object.rotation() += glm::vec3(1, 1, 1) * delta;
-                renderer.render(object, camera);
+                object.rotation() += glm::vec3(2, 3, 5) * delta;
+                renderer.render(object, camera, lights);
             }
+            light_helper.position() = lights[1].position();
+            light_helper.rotation() = lights[1].transformation().rotation();
+
             renderer.render(light_helper, camera);
         });
     }

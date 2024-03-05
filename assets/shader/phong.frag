@@ -1,18 +1,15 @@
 #version 460
 
-struct AmbientLight {
+const int LIGHT_MAX = 16;
+const int LIGHT_AMBIENT = 0;
+const int LIGHT_POINT = 1;
+const int LIGHT_DIRECTIONAL = 2;
+
+struct Ligth {
     vec3 color;
     float strength;
-};
-struct DirectionalLight {
-    vec3 color;
-    float strength;
-    vec3 direction;
-};
-struct PointLight {
-    vec3 color;
-    float strength;
-    vec3 position;
+    vec3 pos_or_dir;
+    int type;
 };
 
 in vec3 v_position;
@@ -28,9 +25,8 @@ uniform mat4 u_projection;
 uniform mat4 u_modelview;
 uniform mat3 u_normal;
 
-uniform AmbientLight u_amb_light;
-// uniform DirectionalLight u_dir_light;
-uniform PointLight u_point_light;
+uniform Ligth u_lights[LIGHT_MAX];
+uniform int u_lights_count;
 
 vec3 blinnPhong(vec3 w_i, vec3 l_i, vec3 n, vec3 k_d, vec3 k_s, float shininess) {
     vec3 w_o = vec3(0, 0, 1);
@@ -42,23 +38,24 @@ vec3 blinnPhong(vec3 w_i, vec3 l_i, vec3 n, vec3 k_d, vec3 k_s, float shininess)
     return l_i * ( result_diffuse + result_specular );
 }
 
-vec3 calculateAmbientLight(AmbientLight light, vec3 color) {
-    return color  * light.color * light.strength;
-}
-vec3 calculateDirectionalLight(DirectionalLight light, vec3 color, vec3 normal) {
-    return blinnPhong(-light.direction, light.color * light.strength, normal, color, vec3(1), 32.);
-}
-vec3 calculatePointLight(PointLight light, vec3 color, vec3 normal) {
-    vec3 direction = normalize(light.position - v_position);
-    float strength = 1.0 / pow(length(light.position - v_position), 2);
-    return blinnPhong(direction, light.color * light.strength * strength, normal, color, vec3(1), 32.);
+vec3 calculateLight(Ligth light, vec3 color, vec3 normal) {
+    if (light.type == LIGHT_AMBIENT) {
+        return color  * light.color * light.strength;
+    } else if (light.type == LIGHT_POINT) {
+        vec3 direction = normalize(light.pos_or_dir - v_position);
+        float strength = 1.0 / pow(length(light.pos_or_dir - v_position), 2);
+        return blinnPhong(direction, light.color * light.strength * strength, normal, color, vec3(1), 32.);
+    } else if (light.type == LIGHT_DIRECTIONAL) {
+        return blinnPhong(-light.pos_or_dir, light.color * light.strength, normal, color, vec3(1), 32.);
+    } 
+    return vec3(0);
 }
 
 void main() {
     vec4 diffuse = texture(u_texture, v_uv);
     vec3 color = vec3(0);
-    color += calculateAmbientLight(u_amb_light, diffuse.rgb);
-    // color += calculateDirectionalLight(u_dir_light, diffuse.rgb, v_normal);
-    color += calculatePointLight(u_point_light, diffuse.rgb, v_normal);
+    for (int i = 0; i < u_lights_count; i++) {
+        color += calculateLight(u_lights[i], diffuse.rgb, v_normal);
+    }
     f_frag_color = vec4(color, diffuse.a);
 }
