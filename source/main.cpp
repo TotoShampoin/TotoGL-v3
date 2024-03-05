@@ -50,14 +50,13 @@ int main(int /* argc */, const char** /* argv */) {
     auto dir_light = TotoGL::Light(glm::vec3(1, 1, 1), 1., TotoGL::LightType::DIRECTIONAL);
     dir_light.position() = { 0, 3, 5 };
     dir_light.transformation().lookAt({ 0, 0, 0 });
+    auto point_light = TotoGL::Light(glm::vec3(1, 1, 1), 1., TotoGL::LightType::POINT);
+    point_light.position() = { 2, 2, 2 };
 
-    {
-        auto& light_helper = makeHelper();
-        light_helper.scaling() = { .5, .5, .5 };
-        light_helper.position() = dir_light.position();
-        light_helper.rotation() = dir_light.direction();
-        kirbies.push_back(light_helper);
-    }
+    auto& light_helper = makeHelper();
+    light_helper.scaling() = { .5, .5, .5 };
+    light_helper.position() = point_light.position();
+    // light_helper.rotation() = dir_light.direction();
 
     auto& material = kirbies[0].get().material();
 
@@ -82,6 +81,9 @@ int main(int /* argc */, const char** /* argv */) {
     material.uniform("u_dir_light.color", dir_light.color());
     material.uniform("u_dir_light.strength", dir_light.strength());
 
+    material.uniform("u_point_light.color", point_light.color());
+    material.uniform("u_point_light.strength", point_light.strength());
+
     renderer.clearColor({ 0, 0, 0, 1 });
     while (!window.shouldClose()) {
         float time = clock.getTime();
@@ -94,6 +96,8 @@ int main(int /* argc */, const char** /* argv */) {
 
         material.uniform("u_dir_light.direction",
             glm::mat3(glm::transpose(glm::inverse(camera.view()))) * dir_light.direction());
+        material.uniform("u_point_light.position",
+            glm::vec3(camera.view() * glm::vec4(point_light.position(), 1)));
 
         window.draw([&]() {
             renderer.clear();
@@ -102,7 +106,7 @@ int main(int /* argc */, const char** /* argv */) {
                 object.rotation() += glm::vec3(1, 1, 1) * delta;
                 renderer.render(object, camera);
             }
-            renderer.render(kirbies[6].get(), camera);
+            renderer.render(light_helper, camera);
         });
     }
 

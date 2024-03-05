@@ -29,14 +29,15 @@ uniform mat4 u_modelview;
 uniform mat3 u_normal;
 
 uniform AmbientLight u_amb_light;
-uniform DirectionalLight u_dir_light;
+// uniform DirectionalLight u_dir_light;
+uniform PointLight u_point_light;
 
 vec3 blinnPhong(vec3 w_i, vec3 l_i, vec3 n, vec3 k_d, vec3 k_s, float shininess) {
     vec3 w_o = vec3(0, 0, 1);
     vec3 half_vector = (w_o + w_i) / 2;
     
-    vec3 result_diffuse = k_d * max(0, dot(w_i, n));
-    vec3 result_specular = k_s * pow(max(0, dot(half_vector, n)), shininess);
+    vec3 result_diffuse = k_d * max(dot(w_i, n), 0);
+    vec3 result_specular = k_s * pow(max(dot(half_vector, n), 0), shininess);
 
     return l_i * ( result_diffuse + result_specular );
 }
@@ -57,6 +58,7 @@ void main() {
     vec4 diffuse = texture(u_texture, v_uv);
     vec3 color = vec3(0);
     color += calculateAmbientLight(u_amb_light, diffuse.rgb);
-    color += calculateDirectionalLight(u_dir_light, diffuse.rgb, v_normal);
+    // color += calculateDirectionalLight(u_dir_light, diffuse.rgb, v_normal);
+    color += calculatePointLight(u_point_light, diffuse.rgb, v_normal);
     f_frag_color = vec4(color, diffuse.a);
 }
