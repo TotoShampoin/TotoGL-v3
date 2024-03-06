@@ -26,7 +26,7 @@ public:
 
     void rotate(float x, float y) {
         static constexpr auto HALF_PI = glm::half_pi<float>();
-        static constexpr auto EPSILON = glm::epsilon<float>();
+        static constexpr auto EPSILON = .0001f;
         _alpha += x;
         _beta += y;
         if (_alpha > HALF_PI - EPSILON)
