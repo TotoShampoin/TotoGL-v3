@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <imgui.h>
 
 #include <backends/imgui_impl_glfw.h>
@@ -21,6 +22,17 @@ inline void initImGui(Window& window) {
     auto& style = ImGui::GetStyle();
     style.FrameRounding = 2.;
     style.WindowRounding = 4.;
+}
+
+inline void renderImGui(std::function<void(void)>&& f) {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    f();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 } // namespace TotoGL
