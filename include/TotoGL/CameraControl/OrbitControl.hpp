@@ -39,6 +39,7 @@ public:
     void bindEvents(Window& window) {
         using InputEventName::MOUSE_BUTTON;
         using VectorEventName::CURSOR_POSITION;
+        using VectorEventName::SCROLL;
         static constexpr auto PI = glm::pi<float>();
 
         static bool is_holding;
@@ -57,6 +58,11 @@ public:
                 return;
             auto [width, height] = window.size();
             rotate(-event.dy / height * PI, -event.dx / height * PI);
+        });
+        window.on(SCROLL, [&](const VectorEvent& event) {
+            _distance -= event.dy;
+            if (_distance < glm::epsilon<float>())
+                _distance = glm::epsilon<float>();
         });
     }
 
