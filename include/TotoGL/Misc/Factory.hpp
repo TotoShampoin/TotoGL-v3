@@ -7,9 +7,20 @@
 namespace TotoGL {
 
 template <typename Type>
+struct ObjectInstanceId {
+    size_t id;
+    bool operator==(const ObjectInstanceId& other) const { return id == other.id; }
+    bool operator!=(const ObjectInstanceId& other) const { return id != other.id; }
+    bool operator<(const ObjectInstanceId& other) const { return id < other.id; }
+    bool operator>(const ObjectInstanceId& other) const { return id > other.id; }
+    bool operator<=(const ObjectInstanceId& other) const { return id <= other.id; }
+    bool operator>=(const ObjectInstanceId& other) const { return id >= other.id; }
+};
+
+template <typename Type>
 class Factory {
 public:
-    using ObjectInstanceId = size_t;
+    using ObjectInstanceId = ObjectInstanceId<Type>;
     static constexpr auto NULL_INSTANCE = ObjectInstanceId { 0 };
 
     Factory(const Factory&) = delete;
