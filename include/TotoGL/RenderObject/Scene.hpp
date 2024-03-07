@@ -41,6 +41,11 @@ public:
         return *this;
     }
 
+    Scene& clear() {
+        _scene_components.clear();
+        return *this;
+    }
+
 private:
     std::vector<SceneComponentInstanceId> _scene_components;
 };
