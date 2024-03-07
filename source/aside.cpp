@@ -49,28 +49,28 @@ void event(
     });
 }
 
-TotoGL::RenderObject& makeObject() {
+TotoGL::RenderObjectInstanceId makeObject() {
     static const auto tex_id = TotoGL::TextureFactory::create(
         // TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
         TotoGL::Texture(std::ifstream("assets/textures/earth.jpg")));
     static const auto mesh_id = TotoGL::MeshFactory::create(
         TotoGL::Mesh::sphere());
-    static const auto mat_id = TotoGL::ShaderMaterialFactory::create(
-        TotoGL::ShaderMaterial(
-            std::ifstream("assets/shader/shader.vert"),
-            std::ifstream("assets/shader/phong.frag")));
-
-    static auto& texture = TotoGL::TextureFactory::get(tex_id);
-    // static auto& mesh = TotoGL::MeshFactory::get(mesh_id);
-    static auto& material = TotoGL::ShaderMaterialFactory::get(mat_id);
-
-    material.uniform("u_texture", texture);
+    static const auto mat_id = [&]() {
+        const auto mat_id = TotoGL::ShaderMaterialFactory::create(
+            TotoGL::ShaderMaterial(
+                std::ifstream("assets/shader/shader.vert"),
+                std::ifstream("assets/shader/phong.frag")));
+        auto& material = TotoGL::ShaderMaterialFactory::get(mat_id);
+        auto& texture = TotoGL::TextureFactory::get(tex_id);
+        material.uniform("u_texture", texture);
+        return mat_id;
+    }();
 
     const auto obj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
-    return TotoGL::RenderObjectFactory::get(obj_id);
+    return obj_id;
 }
 
-TotoGL::RenderObject& makeHelper() {
+TotoGL::RenderObjectInstanceId makeHelper() {
     static const auto mesh_id = TotoGL::MeshFactory::create(
         TotoGL::Mesh::sphere());
     static const auto mat_id = TotoGL::ShaderMaterialFactory::create(
@@ -78,5 +78,5 @@ TotoGL::RenderObject& makeHelper() {
             std::ifstream("assets/shader/shader.vert"),
             std::ifstream("assets/shader/uv.frag")));
     const auto obj_id = TotoGL::RenderObjectFactory::create(TotoGL::RenderObject(mesh_id, mat_id));
-    return TotoGL::RenderObjectFactory::get(obj_id);
+    return obj_id;
 }
