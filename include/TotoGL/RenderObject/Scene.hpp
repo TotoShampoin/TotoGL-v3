@@ -32,6 +32,15 @@ public:
         return scene_components;
     }
 
+    Scene& add(const LightInstanceId& light) {
+        _scene_components.push_back(light);
+        return *this;
+    }
+    Scene& add(const RenderObjectInstanceId& object) {
+        _scene_components.push_back(object);
+        return *this;
+    }
+
 private:
     std::vector<SceneComponentInstanceId> _scene_components;
 };

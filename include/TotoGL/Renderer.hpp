@@ -8,6 +8,7 @@
 #include "RenderObject/Camera.hpp"
 #include "RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/Light.hpp"
+#include "TotoGL/RenderObject/Scene.hpp"
 
 namespace TotoGL {
 
@@ -29,6 +30,22 @@ public:
             (stencil ? GL_STENCIL_BUFFER_BIT : 0));
         glEnable(GL_DEPTH_TEST);
     }
+
+    void render(TotoGL::Scene& scene, TotoGL::Camera& camera) {
+        std::vector<std::reference_wrapper<TotoGL::RenderObject>> objects;
+        std::vector<std::reference_wrapper<TotoGL::Light>> lights;
+        for (auto& component : scene.sceneComponents()) {
+            if (std::holds_alternative<std::reference_wrapper<TotoGL::RenderObject>>(component)) {
+                objects.push_back(std::get<std::reference_wrapper<TotoGL::RenderObject>>(component));
+            } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Light>>(component)) {
+                lights.push_back(std::get<std::reference_wrapper<TotoGL::Light>>(component));
+            }
+        }
+        for (auto& object : objects) {
+            render(object, camera, lights);
+        }
+    }
+
     void render(TotoGL::RenderObject& object, TotoGL::Camera& camera) {
         auto& material = object.material();
         auto modelview = camera.view() * object.transformMatrix();
@@ -53,7 +70,7 @@ public:
         }
         render(object, camera);
     }
-    void render(TotoGL::RenderObject& object, TotoGL::Camera& camera, std::vector<TotoGL::Light>& lights) {
+    void render(TotoGL::RenderObject& object, TotoGL::Camera& camera, std::vector<std::reference_wrapper<TotoGL::Light>>& lights) {
         auto& material = object.material();
         material.uniform("u_lights_count", static_cast<int>(lights.size()));
         for (size_t i = 0; i < lights.size(); i++) {

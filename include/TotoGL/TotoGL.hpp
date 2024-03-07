@@ -20,6 +20,7 @@
 #include <TotoGL/RenderObject/Camera.hpp>
 #include <TotoGL/RenderObject/Mesh.hpp>
 #include <TotoGL/RenderObject/RenderObject.hpp>
+#include <TotoGL/RenderObject/Scene.hpp>
 #include <TotoGL/RenderObject/ShaderMaterial.hpp>
 #include <TotoGL/Renderer.hpp>
 #include <TotoGL/Window.hpp>
