@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Transform.hpp"
 #include <glm/glm.hpp>
 
@@ -47,5 +48,7 @@ private:
     glm::vec3 _color;
     float _strength;
 };
+
+using LightFactory = Factory<Light>;
 
 } // namespace TotoGL
