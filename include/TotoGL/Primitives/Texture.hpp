@@ -67,5 +67,6 @@ private:
 };
 
 using TextureFactory = Factory<Texture>;
+using TextureInstanceId = ObjectInstanceId<Texture>;
 
 } // namespace TotoGL

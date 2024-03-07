@@ -72,6 +72,8 @@ private:
 
 template <ShaderType type>
 using ShaderFactory = Factory<Shader<type>>;
+template <ShaderType type>
+using ShaderInstanceId = ObjectInstanceId<Shader<type>>;
 
 using VertexShader = Shader<ShaderType::VERTEX>;
 using FragmentShader = Shader<ShaderType::FRAGMENT>;

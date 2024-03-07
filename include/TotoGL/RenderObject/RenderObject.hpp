@@ -58,5 +58,6 @@ private:
 };
 
 using RenderObjectFactory = Factory<RenderObject>;
+using RenderObjectInstanceId = Factory<RenderObject>::ObjectInstanceId;
 
 } // namespace TotoGL

@@ -54,5 +54,6 @@ private:
 };
 
 using ShaderMaterialFactory = Factory<TotoGL::ShaderMaterial>;
+using ShaderMaterialInstanceId = ObjectInstanceId<TotoGL::ShaderMaterial>;
 
 } // namespace TotoGL

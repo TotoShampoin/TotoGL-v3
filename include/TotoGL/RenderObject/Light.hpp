@@ -50,5 +50,6 @@ private:
 };
 
 using LightFactory = Factory<Light>;
+using LightInstanceId = Factory<Light>::ObjectInstanceId;
 
 } // namespace TotoGL
