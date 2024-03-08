@@ -6,6 +6,8 @@
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/Window.hpp"
 
+// So, ImGui prevents me from refactoring this class...
+
 namespace TotoGL {
 
 class OrbitControl {

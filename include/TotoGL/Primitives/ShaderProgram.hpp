@@ -14,6 +14,8 @@
 
 namespace TotoGL {
 
+// I would refactor, if not for those template methods
+
 class ShaderProgram {
 public:
     ShaderProgram& link() {

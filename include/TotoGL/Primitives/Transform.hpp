@@ -9,49 +9,26 @@ namespace TotoGL {
 
 class Transform {
 public:
-    glm::mat4 matrix() const {
-        return translationMatrix() * rotationMatrix() * scalingMatrix();
-    }
+    glm::mat4 matrix() const;
 
-    Transform& translate(const glm::vec3& translation) {
-        _translation += translation;
-        return *this;
-    }
-    Transform& rotate(const float& angle, const glm::vec3& axis) {
-        glm::mat4 rotated = glm::rotate(glm::mat4(1), angle, axis) * rotationMatrix();
-        glm::extractEulerAngleXYZ(rotated, _rotation.x, _rotation.y, _rotation.z);
-        return *this;
-    }
-    Transform& rotate(const glm::vec3& angles) {
-        static const auto PI = glm::pi<float>();
-        static const auto TAU = glm::tau<float>();
-        _rotation.x = glm::mod(_rotation.x + angles.x + PI, TAU) - PI;
-        _rotation.y = glm::mod(_rotation.y + angles.y + PI, TAU) - PI;
-        _rotation.z = glm::mod(_rotation.z + angles.z + PI, TAU) - PI;
-        return *this;
-    }
-    Transform& scale(const glm::vec3& factor) {
-        _scaling *= factor;
-        return *this;
-    }
+    Transform& translate(const glm::vec3& translation);
+    Transform& rotate(const float& angle, const glm::vec3& axis);
+    Transform& rotate(const glm::vec3& angles);
+    Transform& scale(const glm::vec3& factor);
 
-    Transform& lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 }) {
-        auto direction = glm::inverse(glm::lookAt(_translation, target, up));
-        glm::extractEulerAngleXYZ(direction, _rotation.x, _rotation.y, _rotation.z);
-        return *this;
-    }
+    Transform& lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 });
 
     glm::vec3& translation() { return _translation; }
     const glm::vec3& translation() const { return _translation; }
-    glm::mat4 translationMatrix() const { return glm::translate(glm::mat4(1), _translation); }
+    glm::mat4 translationMatrix() const;
 
     glm::vec3& rotation() { return _rotation; }
     const glm::vec3& rotation() const { return _rotation; }
-    glm::mat4 rotationMatrix() const { return glm::eulerAngleXYZ(_rotation.x, _rotation.y, _rotation.z); }
+    glm::mat4 rotationMatrix() const;
 
     glm::vec3& scaling() { return _scaling; }
     const glm::vec3& scaling() const { return _scaling; }
-    glm::mat4 scalingMatrix() const { return glm::scale(glm::mat4(1), _scaling); }
+    glm::mat4 scalingMatrix() const;
 
 private:
     glm::vec3 _translation { 0. };

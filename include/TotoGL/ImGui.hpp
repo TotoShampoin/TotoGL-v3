@@ -10,6 +10,8 @@
 
 namespace TotoGL {
 
+// This feels like temporary code, tbh. Like, it's just a useless abstraction layer...
+
 inline void initImGui(Window& window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
