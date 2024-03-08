@@ -17,6 +17,11 @@ struct ObjectInstanceId {
     bool operator>=(const ObjectInstanceId& other) const { return id >= other.id; }
 };
 
+/**
+ * @brief This is a factory class to allocate objects in an ECS fashion.
+ *
+ * @tparam Type - The class type to be allocated.
+ */
 template <typename Type>
 class Factory {
 public:

@@ -5,6 +5,10 @@
 
 namespace TotoGL {
 
+/**
+ * @deprecated Use Transform.hpp instead.
+ *
+ */
 class Transformation {
 public:
     Transformation& translate(const glm::vec3& translation) {

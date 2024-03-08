@@ -22,6 +22,10 @@ using UniformVariant = std::variant<
     glm::mat3x2, glm::mat3x4,
     glm::mat4x2, glm::mat4x3>;
 
+/**
+ * @brief A visitor for shader uniforms.
+ *
+ */
 class Uniform {
 public:
     Uniform(const ProgramId& program, const std::string& name)

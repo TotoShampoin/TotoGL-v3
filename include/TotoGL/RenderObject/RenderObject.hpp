@@ -7,6 +7,11 @@
 
 namespace TotoGL {
 
+/**
+ * @brief A mesh and a material used together.
+ * @warning There is no object tree as of now. If you want an object to depend on another, you have to do that manually for now.
+ *
+ */
 class RenderObject {
 public:
     RenderObject(const MeshFactory::ObjectInstanceId& mesh, const ShaderMaterialFactory::ObjectInstanceId& material)

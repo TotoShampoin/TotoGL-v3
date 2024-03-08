@@ -15,6 +15,10 @@ using SceneComponentInstanceId = std::variant<
     LightInstanceId,
     RenderObjectInstanceId>;
 
+/**
+ * @brief A collection of RenderObjects and Lights. You can just pass it to the Renderer and it will render everything.
+ *
+ */
 class Scene {
 public:
     std::vector<SceneComponentInstanceId>& sceneComponentsIds() { return _scene_components; }
