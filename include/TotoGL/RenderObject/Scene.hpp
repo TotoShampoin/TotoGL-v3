@@ -24,34 +24,18 @@ public:
     std::vector<SceneComponentInstanceId>& sceneComponentsIds() { return _scene_components; }
     const std::vector<SceneComponentInstanceId>& sceneComponentsIds() const { return _scene_components; }
 
-    std::vector<SceneComponentReference> sceneComponents() const {
-        std::vector<SceneComponentReference> scene_components;
-        for (auto& id : _scene_components) {
-            if (std::holds_alternative<ObjectInstanceId<Light>>(id)) {
-                scene_components.push_back(Factory<Light>::get(std::get<ObjectInstanceId<Light>>(id)));
-            } else if (std::holds_alternative<ObjectInstanceId<RenderObject>>(id)) {
-                scene_components.push_back(Factory<RenderObject>::get(std::get<ObjectInstanceId<RenderObject>>(id)));
-            }
-        }
-        return scene_components;
-    }
+    std::vector<SceneComponentReference> sceneComponents() const;
 
-    Scene& add(const LightInstanceId& light) {
-        _scene_components.push_back(light);
-        return *this;
-    }
-    Scene& add(const RenderObjectInstanceId& object) {
-        _scene_components.push_back(object);
-        return *this;
-    }
+    Scene& add(const LightInstanceId& light);
+    Scene& add(const RenderObjectInstanceId& object);
 
-    Scene& clear() {
-        _scene_components.clear();
-        return *this;
-    }
+    Scene& clear();
 
 private:
     std::vector<SceneComponentInstanceId> _scene_components;
 };
+
+using SceneFactory = Factory<Scene>;
+using SceneInstanceId = ObjectInstanceId<Scene>;
 
 } // namespace TotoGL

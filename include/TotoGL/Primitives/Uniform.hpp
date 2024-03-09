@@ -9,6 +9,8 @@
 #include <string>
 #include <variant>
 
+// Yeah, this one is staying as a header.
+
 namespace TotoGL {
 
 using UniformVariant = std::variant<

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Mesh.hpp"
-#include "ShaderMaterial.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Transform.hpp"
+#include "TotoGL/RenderObject/Mesh.hpp"
+#include "TotoGL/RenderObject/ShaderMaterial.hpp"
 
 namespace TotoGL {
 
@@ -14,38 +14,15 @@ namespace TotoGL {
  */
 class RenderObject {
 public:
-    RenderObject(const MeshFactory::ObjectInstanceId& mesh, const ShaderMaterialFactory::ObjectInstanceId& material)
-        : _mesh(mesh)
-        , _material(material) { }
+    RenderObject(const MeshInstanceId& mesh, const ShaderMaterialInstanceId& material);
 
-    void draw() {
-        auto& material = ShaderMaterialFactory::get(_material);
-        auto& mesh = MeshFactory::get(_mesh);
+    void draw();
+    static void unbind();
 
-        material.use();
-        mesh.draw();
-        material.unuse();
-    }
-    static void unbind() {
-        ShaderProgram::unuse();
-        Mesh::unbind();
-    }
-
-    RenderObject& translate(const glm::vec3& translation) {
-        _transform.translate(translation);
-        return *this;
-    }
-    RenderObject& scale(const glm::vec3& factor) {
-        _transform.scale(factor);
-        return *this;
-    }
-    RenderObject& rotate(const float& angle, const glm::vec3& axis) {
-        _transform.rotate(angle, axis);
-        return *this;
-    }
-    void lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 }) {
-        _transform.lookAt(target, up);
-    }
+    RenderObject& translate(const glm::vec3& translation);
+    RenderObject& scale(const glm::vec3& factor);
+    RenderObject& rotate(const float& angle, const glm::vec3& axis);
+    void lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 });
 
     Transform& transformation() { return _transform; }
     glm::mat4 transformMatrix() const { return _transform.matrix(); }
@@ -57,12 +34,12 @@ public:
     ShaderMaterial& material() { return ShaderMaterialFactory::get(_material); }
 
 private:
-    MeshFactory::ObjectInstanceId _mesh;
-    ShaderMaterialFactory::ObjectInstanceId _material;
+    MeshInstanceId _mesh;
+    ShaderMaterialInstanceId _material;
     Transform _transform;
 };
 
 using RenderObjectFactory = Factory<RenderObject>;
-using RenderObjectInstanceId = Factory<RenderObject>::ObjectInstanceId;
+using RenderObjectInstanceId = ObjectInstanceId<RenderObject>;
 
 } // namespace TotoGL

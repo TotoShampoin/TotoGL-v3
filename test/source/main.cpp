@@ -12,7 +12,7 @@ void event(
     TotoGL::OrbitControl& orbit,
     glm::vec3& velocity);
 
-TotoGL::ShaderMaterialFactory::ObjectInstanceId getMaterial();
+TotoGL::ShaderMaterialInstanceId getMaterial();
 TotoGL::RenderObjectInstanceId makeObject();
 TotoGL::RenderObjectInstanceId makeHelper();
 

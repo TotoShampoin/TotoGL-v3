@@ -13,29 +13,15 @@ public:
     static Camera Perspective(float fovy, float aspect, float near, float far) {
         return Camera().setPersective(fovy, aspect, near, far);
     }
-
     static Camera Orthographic(float left, float right, float bottom, float top, float near, float far) {
         return Camera().setOrthographic(left, right, bottom, top, near, far);
     }
 
-    Camera& setPersective(float fovy, float aspect, float near, float far) {
-        _projection = glm::perspective(fovy, aspect, near, far);
-        return *this;
-    }
+    Camera& setPersective(float fovy, float aspect, float near, float far);
+    Camera& setOrthographic(float left, float right, float bottom, float top, float near, float far);
 
-    Camera& setOrthographic(float left, float right, float bottom, float top, float near, float far) {
-        _projection = glm::ortho(left, right, bottom, top, near, far);
-        return *this;
-    }
-
-    Camera& translate(const glm::vec3& translation) {
-        _transform.translate(translation);
-        return *this;
-    }
-    Camera& rotate(const float& angle, const glm::vec3& axis) {
-        _transform.rotate(angle, axis);
-        return *this;
-    }
+    Camera& translate(const glm::vec3& translation);
+    Camera& rotate(const float& angle, const glm::vec3& axis);
 
     Transform& transformation() { return _transform; }
     glm::vec3& position() { return _transform.translation(); }

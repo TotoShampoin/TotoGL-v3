@@ -26,144 +26,25 @@ public:
         TRIANGLE_FAN = GL_TRIANGLE_FAN,
     };
 
-    Mesh() {
-        glBindVertexArray(_vao.id());
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo.id());
-        glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
-        glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
-        glEnableVertexAttribArray(VERTEX_ATTR_UV);
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo.id());
-        glVertexAttribPointer(VERTEX_ATTR_POSITION, sizeof(TotoGL::VertexType::position) / sizeof(float), GL_FLOAT, GL_FALSE, sizeof(TotoGL::VertexType), (const void*)offsetof(TotoGL::VertexType, position));
-        glVertexAttribPointer(VERTEX_ATTR_NORMAL, sizeof(TotoGL::VertexType::normal) / sizeof(float), GL_FLOAT, GL_FALSE, sizeof(TotoGL::VertexType), (const void*)offsetof(TotoGL::VertexType, normal));
-        glVertexAttribPointer(VERTEX_ATTR_UV, sizeof(TotoGL::VertexType::uv) / sizeof(float), GL_FLOAT, GL_FALSE, sizeof(TotoGL::VertexType), (const void*)offsetof(TotoGL::VertexType, uv));
-        glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-        glBindVertexArray(GL_NONE);
-    }
+    Mesh();
 
-    Mesh(const std::vector<VertexType>& vertices, const std::vector<uint>& indices)
-        : Mesh() {
-        load(vertices, indices);
-    }
+    Mesh(const std::vector<VertexType>& vertices, const std::vector<uint>& indices);
 
-    void load(const std::vector<VertexType>& vertices, const std::vector<uint>& indices) {
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo.id());
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(TotoGL::VertexType), vertices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo.id());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), indices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-        _vertex_count = vertices.size();
-        _index_count = indices.size();
-    }
+    void load(const std::vector<VertexType>& vertices, const std::vector<uint>& indices);
 
-    void draw() {
-        bind();
-        glEnable(GL_CULL_FACE);
-        glCullFace(static_cast<GLenum>(_cull_face));
-        glDrawElements(static_cast<GLenum>(_draw_method), _index_count, GL_UNSIGNED_INT, 0);
-        unbind();
-    }
+    void draw();
 
-    void bind() {
-        glBindVertexArray(_vao.id());
-    }
+    void bind();
 
-    static void unbind() {
-        glBindVertexArray(0);
-    }
-
-    // geometry digures
-
-    static Mesh quad(float width = 1.f, float height = 1.f) {
-        static std::vector<VertexType> vertices = {
-            { { -width / 2.f, height / 2.f, 0 }, { 0, 0, 1 }, { 0, 0 } },
-            { { width / 2.f, height / 2.f, 0 }, { 0, 0, 1 }, { 1, 0 } },
-            { { width / 2.f, -height / 2.f, 0 }, { 0, 0, 1 }, { 1, 1 } },
-            { { -width / 2.f, -height / 2.f, 0 }, { 0, 0, 1 }, { 0, 1 } },
-        };
-        static std::vector<uint> triangles = { 0, 1, 2, 0, 2, 3 };
-        return Mesh(vertices, triangles);
-    }
-
-    // each face independent from the other
-    static Mesh cube(float width = 1.f, float height = 1.f, float depth = 1.f) {
-        static std::vector<VertexType> vertices = {
-            // front
-            { { -width / 2.f, height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 0, 0 } },
-            { { width / 2.f, height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 1, 0 } },
-            { { width / 2.f, -height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 1, 1 } },
-            { { -width / 2.f, -height / 2.f, depth / 2.f }, { 0, 0, 1 }, { 0, 1 } },
-            // back
-            { { -width / 2.f, height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 1, 0 } },
-            { { width / 2.f, height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 0, 0 } },
-            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 0, 1 } },
-            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { 0, 0, -1 }, { 1, 1 } },
-            // left
-            { { -width / 2.f, height / 2.f, -depth / 2.f }, { -1, 0, 0 }, { 0, 0 } },
-            { { -width / 2.f, height / 2.f, depth / 2.f }, { -1, 0, 0 }, { 1, 0 } },
-            { { -width / 2.f, -height / 2.f, depth / 2.f }, { -1, 0, 0 }, { 1, 1 } },
-            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { -1, 0, 0 }, { 0, 1 } },
-            // right
-            { { width / 2.f, height / 2.f, -depth / 2.f }, { 1, 0, 0 }, { 1, 0 } },
-            { { width / 2.f, height / 2.f, depth / 2.f }, { 1, 0, 0 }, { 0, 0 } },
-            { { width / 2.f, -height / 2.f, depth / 2.f }, { 1, 0, 0 }, { 0, 1 } },
-            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 1, 0, 0 }, { 1, 1 } },
-            // top
-            { { -width / 2.f, height / 2.f, -depth / 2.f }, { 0, 1, 0 }, { 0, 0 } },
-            { { width / 2.f, height / 2.f, -depth / 2.f }, { 0, 1, 0 }, { 1, 0 } },
-            { { width / 2.f, height / 2.f, depth / 2.f }, { 0, 1, 0 }, { 1, 1 } },
-            { { -width / 2.f, height / 2.f, depth / 2.f }, { 0, 1, 0 }, { 0, 1 } },
-            // bottom
-            { { -width / 2.f, -height / 2.f, -depth / 2.f }, { 0, -1, 0 }, { 1, 0 } },
-            { { width / 2.f, -height / 2.f, -depth / 2.f }, { 0, -1, 0 }, { 0, 0 } },
-            { { width / 2.f, -height / 2.f, depth / 2.f }, { 0, -1, 0 }, { 0, 1 } },
-            { { -width / 2.f, -height / 2.f, depth / 2.f }, { 0, -1, 0 }, { 1, 1 } },
-        };
-        static std::vector<uint> triangles = {
-            0, 1, 2, 0, 2, 3, // front
-            4, 6, 5, 4, 7, 6, // back
-            8, 9, 10, 8, 10, 11, // left
-            12, 14, 13, 12, 15, 14, // right
-            16, 17, 18, 16, 18, 19, // top
-            20, 22, 21, 20, 23, 22, // bottom
-        };
-        return Mesh(vertices, triangles);
-    }
-
-    static Mesh sphere(float radius = 1.f, int x_segments = 64, int y_segments = 64) {
-        static const float PI = glm::pi<float>();
-        static const float TAU = glm::tau<float>();
-
-        std::vector<VertexType> vertices;
-        std::vector<uint> indices;
-        for (int y = 0; y <= y_segments; y++) {
-            for (int x = 0; x <= x_segments; x++) {
-                glm::vec2 uv = {
-                    (float)x / x_segments,
-                    (float)y / y_segments
-                };
-                glm::vec3 coord = {
-                    glm::cos(uv.x * TAU) * glm::sin(uv.y * PI),
-                    glm::cos(uv.y * PI),
-                    glm::sin(uv.x * TAU) * glm::sin(uv.y * PI),
-                };
-                vertices.push_back({ coord * radius, coord, uv });
-
-                if (x < x_segments && y < y_segments) {
-                    indices.push_back((y + 1) * (x_segments + 1) + x);
-                    indices.push_back(y * (x_segments + 1) + x + 1);
-                    indices.push_back(y * (x_segments + 1) + x);
-
-                    indices.push_back((y + 1) * (x_segments + 1) + x);
-                    indices.push_back((y + 1) * (x_segments + 1) + x + 1);
-                    indices.push_back(y * (x_segments + 1) + x + 1);
-                }
-            }
-        }
-        return Mesh(vertices, indices);
-    }
+    static void unbind();
 
     CullFace& cull_face() { return _cull_face; };
     DrawMethod& draw_method() { return _draw_method; };
+
+    // geometry digures
+    static Mesh quad(float width = 1.f, float height = 1.f);
+    static Mesh cube(float width = 1.f, float height = 1.f, float depth = 1.f);
+    static Mesh sphere(float radius = 1.f, int x_segments = 64, int y_segments = 64);
 
 private:
     VboId _vbo;
@@ -180,6 +61,6 @@ private:
 };
 
 using MeshFactory = Factory<Mesh>;
-using MeshInstanceId = Factory<Mesh>::ObjectInstanceId;
+using MeshInstanceId = ObjectInstanceId<Mesh>;
 
 } // namespace TotoGL
