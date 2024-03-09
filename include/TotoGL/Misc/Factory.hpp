@@ -25,19 +25,19 @@ struct ObjectInstanceId {
 template <typename Type>
 class Factory {
 public:
-    using ObjectInstanceId = ObjectInstanceId<Type>;
-    static constexpr auto NULL_INSTANCE = ObjectInstanceId { 0 };
+    // using ObjectInstanceId = ObjectInstanceId<Type>;
+    static constexpr auto NULL_INSTANCE = ObjectInstanceId<Type> { 0 };
 
     Factory(const Factory&) = delete;
     Factory& operator=(const Factory&) = delete;
 
-    static ObjectInstanceId create(Type&& object_instance = Type()) {
+    static ObjectInstanceId<Type> create(Type&& object_instance = Type()) {
         auto& factory = factoryInstance();
         auto id = factory.nextObjectInstanceId();
         factory._object_instances.emplace(id, std::move(object_instance));
         return id;
     }
-    static void destroy(const ObjectInstanceId& id) {
+    static void destroy(const ObjectInstanceId<Type>& id) {
         auto& factory = factoryInstance();
         if (!factory._object_instances.contains(id))
             return;
@@ -46,7 +46,7 @@ public:
         }
         factory._object_instances.erase(id);
     }
-    static Type& get(const ObjectInstanceId& id) {
+    static Type& get(const ObjectInstanceId<Type>& id) {
         if (id == NULL_INSTANCE)
             throw std::out_of_range("ObjectInstanceId points to null value");
         auto& factory = factoryInstance();
@@ -62,10 +62,10 @@ private:
     Factory() = default;
     ~Factory() = default;
 
-    std::map<ObjectInstanceId, Type> _object_instances;
-    ObjectInstanceId nextObjectInstanceId() {
+    std::map<ObjectInstanceId<Type>, Type> _object_instances;
+    ObjectInstanceId<Type> nextObjectInstanceId() {
         static size_t id = 1;
-        return ObjectInstanceId { id++ };
+        return ObjectInstanceId<Type> { id++ };
     }
 };
 

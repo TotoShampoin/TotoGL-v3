@@ -7,7 +7,7 @@
 
 namespace TotoGL {
 
-RenderObject::RenderObject(const MeshFactory::ObjectInstanceId& mesh, const ShaderMaterialFactory::ObjectInstanceId& material)
+RenderObject::RenderObject(const MeshInstanceId& mesh, const ShaderMaterialInstanceId& material)
     : _mesh(mesh)
     , _material(material) { }
 

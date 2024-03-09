@@ -84,6 +84,6 @@ private:
 };
 
 using ShaderProgramFactory = Factory<ShaderProgram>;
-using ShaderProgramInstanceId = Factory<ShaderProgram>::ObjectInstanceId;
+using ShaderProgramInstanceId = ObjectInstanceId<ShaderProgram>;
 
 } // namespace TotoGL

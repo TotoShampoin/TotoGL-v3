@@ -61,6 +61,6 @@ private:
 };
 
 using MeshFactory = Factory<Mesh>;
-using MeshInstanceId = Factory<Mesh>::ObjectInstanceId;
+using MeshInstanceId = ObjectInstanceId<Mesh>;
 
 } // namespace TotoGL
