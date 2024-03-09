@@ -44,7 +44,7 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
             is_holding = bool(event.action);
         }
     });
-    window.on(CURSOR_POSITION, [&](const VectorEvent& event) {
+    window.on(CURSOR_POSITION, [&, focus_stolen](const VectorEvent& event) {
         if (focus_stolen()) {
             is_holding = false;
             return;
