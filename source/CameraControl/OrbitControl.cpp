@@ -51,12 +51,13 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
         }
         if (!is_holding)
             return;
-        rotate(event.x * .01f, event.y * .01f);
+        auto [width, height] = window.size();
+        rotate(-event.dy / height * PI, -event.dx / height * PI);
     });
     window.on(SCROLL, [&](const VectorEvent& event) {
-        _distance -= event.y * .1f;
-        if (_distance < .1f)
-            _distance = .1f;
+        _distance -= event.dy;
+        if (_distance < glm::epsilon<float>())
+            _distance = glm::epsilon<float>();
     });
 }
 
