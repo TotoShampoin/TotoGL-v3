@@ -29,9 +29,17 @@ public:
         : Shader() {
         loadAndCompile(std::move(file));
     }
+    Shader(const std::string& src)
+        : Shader() {
+        loadAndCompile(src);
+    }
 
     bool loadAndCompile(std::ifstream&& file) {
         load(std::move(file));
+        return compile();
+    }
+    bool loadAndCompile(const std::string& src) {
+        load(src);
         return compile();
     }
 
