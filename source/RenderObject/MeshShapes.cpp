@@ -67,13 +67,13 @@ Mesh Mesh::sphere(float radius, int x_segments, int y_segments) {
     for (int y = 0; y <= y_segments; y++) {
         for (int x = 0; x <= x_segments; x++) {
             glm::vec2 uv = {
-                (float)x / x_segments,
+                -(float)x / x_segments,
                 (float)y / y_segments
             };
             glm::vec3 coord = {
-                glm::cos(uv.x * TAU) * glm::sin(uv.y * PI),
+                glm::cos(-uv.x * TAU) * glm::sin(uv.y * PI),
                 glm::cos(uv.y * PI),
-                glm::sin(uv.x * TAU) * glm::sin(uv.y * PI),
+                glm::sin(-uv.x * TAU) * glm::sin(uv.y * PI),
             };
             vertices.push_back({ coord * radius, coord, uv });
 
