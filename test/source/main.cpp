@@ -24,8 +24,8 @@ int main(int /* argc */, const char** /* argv */) {
     using TotoGL::VectorEventName::FRAMEBUFFER_SIZE;
     using TotoGL::VectorEventName::SCROLL;
 
-    constexpr int WIDTH = 640;
-    constexpr int HEIGHT = 480;
+    constexpr int WIDTH = 1600;
+    constexpr int HEIGHT = 800;
     constexpr float FOV = glm::radians(70.f);
 
     auto window = TotoGL::Window(WIDTH, HEIGHT, "a title");

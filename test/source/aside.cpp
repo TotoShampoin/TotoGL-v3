@@ -22,7 +22,7 @@ TotoGL::RenderObjectInstanceId makeObject() {
         // TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
         TotoGL::Texture(std::ifstream("assets/textures/earth.jpg")));
     static const auto mesh_id = TotoGL::MeshFactory::create(
-        TotoGL::Mesh::sphere(1, 128, 64));
+        TotoGL::Mesh::sphere(1, 12, 8));
     static const auto mat_id = [&]() {
         const auto mat_id = TotoGL::ShaderMaterialFactory::create(
             TotoGL::ShaderMaterial(
