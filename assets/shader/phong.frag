@@ -46,7 +46,8 @@ vec3 calculateLight(Ligth light, vec3 color, vec3 normal) {
         float strength = 1.0 / pow(length(light.pos_or_dir - v_position), 2);
         return blinnPhong(direction, light.color * light.strength * strength, normal, color, vec3(1), 32.);
     } else if (light.type == LIGHT_DIRECTIONAL) {
-        return blinnPhong(-light.pos_or_dir, light.color * light.strength, normal, color, vec3(1), 32.);
+        vec3 direction = normalize(-light.pos_or_dir);
+        return blinnPhong(direction, light.color * light.strength, normal, color, vec3(1), 32.);
     } 
     return vec3(0);
 }
