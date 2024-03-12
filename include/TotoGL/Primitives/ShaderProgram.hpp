@@ -25,6 +25,12 @@ public:
 
     ShaderProgram& use() {
         glUseProgram(_program.id());
+        for (auto& [name, texture] : _textures) {
+            int map_index = std::distance(_textures.begin(), _textures.find(name));
+            uniform(name, map_index);
+            glActiveTexture(GL_TEXTURE0 + map_index);
+            texture.get().bind();
+        }
         return *this;
     }
     static void unuse() {
