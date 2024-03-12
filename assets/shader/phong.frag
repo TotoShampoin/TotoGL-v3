@@ -55,7 +55,7 @@ void main() {
     vec4 diffuse = texture(u_texture, v_uv);
     vec3 color = vec3(0);
     for (int i = 0; i < u_lights_count; i++) {
-        color += calculateLight(u_lights[i], diffuse.rgb, v_normal);
+        color += calculateLight(u_lights[i], diffuse.rgb, normalize(v_normal));
     }
     f_frag_color = vec4(color, diffuse.a);
 }

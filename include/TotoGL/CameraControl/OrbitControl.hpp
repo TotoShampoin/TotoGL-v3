@@ -1,7 +1,5 @@
 #pragma once
 
-#include <TotoGL/GL.hpp>
-
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/Window.hpp"
 

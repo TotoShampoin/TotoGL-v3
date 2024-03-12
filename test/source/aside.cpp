@@ -4,48 +4,16 @@
 void event(
     TotoGL::Window& window,
     TotoGL::Camera& camera,
-    bool& holding,
-    TotoGL::OrbitControl& orbit,
-    glm::vec3& velocity) {
+    TotoGL::FreeUseControl& control) {
 
-    using TotoGL::InputEventName::KEY;
-    using TotoGL::InputEventName::MOUSE_BUTTON;
-    using TotoGL::VectorEventName::CURSOR_POSITION;
     using TotoGL::VectorEventName::FRAMEBUFFER_SIZE;
-    using TotoGL::VectorEventName::SCROLL;
 
-    // constexpr int WIDTH = 640;
-    constexpr int HEIGHT = 480;
     constexpr float FOV = glm::radians(70.f);
 
+    control.bindEvents(window);
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& event) {
         glViewport(0, 0, int(event.x), int(event.y));
-        camera.setPersective(FOV, (float)event.x / event.y, 1.f, 100.f);
-    });
-    window.on(MOUSE_BUTTON, [&](const TotoGL::InputEvent& event) {
-        if (event.button != GLFW_MOUSE_BUTTON_1)
-            return;
-        holding = event.action;
-    });
-    window.on(CURSOR_POSITION, [&](const TotoGL::VectorEvent& event) {
-        if (!holding)
-            return;
-        orbit.rotate(
-            -event.dy / HEIGHT * 2 * FOV,
-            -event.dx / HEIGHT * 2 * FOV);
-    });
-    window.on(SCROLL, [&](const TotoGL::VectorEvent& event) {
-        orbit.distance() += event.y;
-    });
-    window.on(KEY, [&](const TotoGL::InputEvent& event) {
-        if (event.button == GLFW_KEY_UP)
-            velocity.z = -(event.action != GLFW_RELEASE);
-        else if (event.button == GLFW_KEY_DOWN)
-            velocity.z = (event.action != GLFW_RELEASE);
-        if (event.button == GLFW_KEY_LEFT)
-            velocity.x = -(event.action != GLFW_RELEASE);
-        if (event.button == GLFW_KEY_RIGHT)
-            velocity.x = (event.action != GLFW_RELEASE);
+        camera.setPersective(FOV, (float)event.x / event.y, 0.1f, 100.f);
     });
 }
 
@@ -54,7 +22,7 @@ TotoGL::RenderObjectInstanceId makeObject() {
         // TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
         TotoGL::Texture(std::ifstream("assets/textures/earth.jpg")));
     static const auto mesh_id = TotoGL::MeshFactory::create(
-        TotoGL::Mesh::sphere());
+        TotoGL::Mesh::sphere(1, 128, 64));
     static const auto mat_id = [&]() {
         const auto mat_id = TotoGL::ShaderMaterialFactory::create(
             TotoGL::ShaderMaterial(

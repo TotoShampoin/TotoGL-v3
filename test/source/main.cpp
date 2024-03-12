@@ -8,9 +8,7 @@
 void event(
     TotoGL::Window& window,
     TotoGL::Camera& camera,
-    bool& holding,
-    TotoGL::OrbitControl& orbit,
-    glm::vec3& velocity);
+    TotoGL::FreeUseControl& control);
 
 TotoGL::ShaderMaterialInstanceId getMaterial();
 TotoGL::RenderObjectInstanceId makeObject();
@@ -70,11 +68,11 @@ int main(int /* argc */, const char** /* argv */) {
     auto clock = TotoGL::Clock();
 
     auto orbit = TotoGL::OrbitControl(0, 0, 8);
+    auto fps = TotoGL::FreeUseControl();
+    fps.speed() = 5;
+    fps.sensitivity() = 3;
 
-    bool holding = false;
-    glm::vec3 velocity = { 0, 0, 0 };
-
-    event(window, camera, holding, orbit, velocity);
+    event(window, camera, fps);
 
     // glEnable(GL_CULL_FACE);
     // glCullFace(GL_FRONT);
@@ -88,10 +86,11 @@ int main(int /* argc */, const char** /* argv */) {
         float delta = clock.getDeltaTime();
 
         for (auto& kirby : kirbies) {
-            kirby.get().rotation() += glm::vec3(2, 3, 5) * delta;
+            kirby.get().rotation() += glm::vec3(2, 3, 5) * delta / 10.f;
         }
 
-        orbit.apply(camera);
+        fps.update(delta);
+        fps.apply(camera);
 
         material.uniform("u_time", time);
 
