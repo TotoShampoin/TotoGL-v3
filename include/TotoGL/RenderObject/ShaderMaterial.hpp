@@ -4,6 +4,7 @@
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/ShaderProgram.hpp"
+#include "TotoGL/Primitives/Texture.hpp"
 
 namespace TotoGL {
 
@@ -24,6 +25,7 @@ public:
     static void unuse();
 
     void uniform(const std::string& name, const UniformVariant& value);
+    void uniform(const std::string& name, TextureInstanceId value);
     void uniform(const std::string& name, Texture& value);
 
 private:

@@ -2,6 +2,7 @@
 
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/ShaderProgram.hpp"
+#include "TotoGL/Primitives/Texture.hpp"
 
 namespace TotoGL {
 
@@ -33,6 +34,9 @@ void ShaderMaterial::uniform(const std::string& name, const UniformVariant& valu
     unuse();
 }
 
+void ShaderMaterial::uniform(const std::string& name, TextureInstanceId value) {
+    _program.uniform(name, TextureFactory::get(value));
+}
 void ShaderMaterial::uniform(const std::string& name, Texture& value) {
     use();
     _program.uniform(name, value);
