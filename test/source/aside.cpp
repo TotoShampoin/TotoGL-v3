@@ -21,10 +21,7 @@ void event(
 
 TotoGL::RenderObjectInstanceId makeObject() {
     static const auto tex_id = TotoGL::TextureFactory::create(
-        // TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
         TotoGL::Texture(std::ifstream("assets/textures/earth.jpg")));
-    // static const auto mesh_id = TotoGL::MeshFactory::create(
-    //     TotoGL::Mesh::sphere(1, 12, 8));
     static const auto mesh_id = TotoGL::MeshFactory::create(
         TotoGL::loadWavefrontObj(std::ifstream("assets/obj/cone.obj")));
     static const auto mat_id = [&]() {
