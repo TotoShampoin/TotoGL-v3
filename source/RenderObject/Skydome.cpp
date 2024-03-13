@@ -28,10 +28,6 @@ Skydome::Skydome(Texture& texture)
     setTexture(texture);
 }
 
-Skydome::~Skydome() {
-    RenderObjectFactory::destroy(_object);
-}
-
 void Skydome::setTexture(Texture& texture) {
     auto& material = object().material();
     material.uniform("u_texture", texture);

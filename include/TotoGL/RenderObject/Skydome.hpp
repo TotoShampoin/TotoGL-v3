@@ -8,7 +8,7 @@ class Skydome {
 public:
     Skydome();
     Skydome(Texture& texture);
-    ~Skydome();
+    ~Skydome() = default;
 
     RenderObject& object() const { return RenderObjectFactory::get(_object); }
 
@@ -17,5 +17,8 @@ public:
 private:
     RenderObjectInstanceId _object;
 };
+
+using SkydomeFactory = Factory<Skydome>;
+using SkydomeInstanceId = ObjectInstanceId<Skydome>;
 
 } // namespace TotoGL
