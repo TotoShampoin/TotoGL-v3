@@ -1,5 +1,6 @@
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
+#include "TotoGL/RenderObject/Skydome.hpp"
 #include <TotoGL/TotoGL.hpp>
 
 #include <TotoGL/RenderObject/Light.hpp>
@@ -48,19 +49,9 @@ int main(int /* argc */, const char** /* argv */) {
     kirbies[4].get().translate({ 2, 0, 0 });
     kirbies[5].get().translate({ -2, 0, 0 });
 
-    auto skydome_mesh_id = TotoGL::MeshFactory::create(
-        TotoGL::Mesh::quad(2, 2));
-    auto skydome_material_id = TotoGL::ShaderMaterialFactory::create(
-        TotoGL::ShaderMaterial(
-            std::ifstream("assets/shader/skydome.vert"),
-            std::ifstream("assets/shader/skydome.frag")));
-    auto skydome_id = TotoGL::RenderObjectFactory::create(
-        TotoGL::RenderObject(skydome_mesh_id, skydome_material_id));
     auto skydome_texture_id = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")));
-    TotoGL::ShaderMaterialFactory::get(skydome_material_id)
-        .uniform("u_texture", TotoGL::TextureFactory::get(skydome_texture_id));
-    auto& skydome = TotoGL::RenderObjectFactory::get(skydome_id);
+    auto skydome = TotoGL::Skydome(TotoGL::TextureFactory::get(skydome_texture_id));
 
     // auto lights = std::vector<TotoGL::Light>();
     {
@@ -111,7 +102,7 @@ int main(int /* argc */, const char** /* argv */) {
 
         window.draw([&]() {
             renderer.clear();
-            renderer.render(skydome, camera);
+            renderer.render(skydome.object(), camera);
             renderer.clear(false, true, false);
             renderer.render(scene, camera);
         });
