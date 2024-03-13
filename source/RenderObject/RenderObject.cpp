@@ -4,7 +4,6 @@
 #include "TotoGL/Primitives/Transform.hpp"
 #include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
-#include <iostream>
 
 namespace TotoGL {
 
