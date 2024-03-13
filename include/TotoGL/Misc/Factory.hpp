@@ -7,15 +7,7 @@
 namespace TotoGL {
 
 template <typename Type>
-struct ObjectInstanceId {
-    size_t id;
-    bool operator==(const ObjectInstanceId& other) const { return id == other.id; }
-    bool operator!=(const ObjectInstanceId& other) const { return id != other.id; }
-    bool operator<(const ObjectInstanceId& other) const { return id < other.id; }
-    bool operator>(const ObjectInstanceId& other) const { return id > other.id; }
-    bool operator<=(const ObjectInstanceId& other) const { return id <= other.id; }
-    bool operator>=(const ObjectInstanceId& other) const { return id >= other.id; }
-};
+struct ObjectInstanceId;
 
 /**
  * @brief This is a factory class to allocate objects in an ECS fashion.
@@ -69,6 +61,20 @@ private:
         static size_t id = 1;
         return ObjectInstanceId<Type> { id++ };
     }
+};
+
+template <typename Type>
+struct ObjectInstanceId {
+    size_t id;
+    bool operator==(const ObjectInstanceId& other) const { return id == other.id; }
+    bool operator!=(const ObjectInstanceId& other) const { return id != other.id; }
+    bool operator<(const ObjectInstanceId& other) const { return id < other.id; }
+    bool operator>(const ObjectInstanceId& other) const { return id > other.id; }
+    bool operator<=(const ObjectInstanceId& other) const { return id <= other.id; }
+    bool operator>=(const ObjectInstanceId& other) const { return id >= other.id; }
+    Type& get() const { return Factory<Type>::get(*this); }
+    Type& operator*() const { return get(); }
+    Type* operator->() const { return &get(); }
 };
 
 } // namespace TotoGL

@@ -41,7 +41,7 @@ int main(int /* argc */, const char** /* argv */) {
     for (int i = 0; i < 6; i++) {
         auto kirby = makeObject();
         scene.add(kirby);
-        kirbies.push_back(TotoGL::RenderObjectFactory::get(kirby));
+        kirbies.push_back(*kirby);
     }
     kirbies[0].get().translate({ 0, 0, 2 });
     kirbies[1].get().translate({ 0, 0, -2 });
@@ -64,7 +64,7 @@ int main(int /* argc */, const char** /* argv */) {
     auto skydome_texture = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")));
     auto skydome = TotoGL::SkydomeFactory::create(
-        TotoGL::Skydome(TotoGL::TextureFactory::get(skydome_texture)));
+        TotoGL::Skydome(*skydome_texture));
     // this don't worl :(
     scene.add(skydome);
 
@@ -75,7 +75,7 @@ int main(int /* argc */, const char** /* argv */) {
         auto dirlight_id = TotoGL::LightFactory::create(
             TotoGL::Light(glm::vec3(1, 1, 1), 1, TotoGL::LightType::DIRECTIONAL));
 
-        auto& dirlight = TotoGL::LightFactory::get(dirlight_id);
+        auto& dirlight = *dirlight_id;
         dirlight.position() = { 3, 3, 3 };
         dirlight.transformation().lookAt({ 0, 0, 0 });
 
