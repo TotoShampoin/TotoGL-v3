@@ -14,7 +14,7 @@
 #include <TotoGL/Primitives/Shader.hpp>
 #include <TotoGL/Primitives/ShaderProgram.hpp>
 #include <TotoGL/Primitives/Texture.hpp>
-#include <TotoGL/Primitives/Transformation.hpp>
+#include <TotoGL/Primitives/Transform.hpp>
 #include <TotoGL/Primitives/Uniform.hpp>
 #include <TotoGL/Primitives/Vertex.hpp>
 #include <TotoGL/RenderObject/Camera.hpp>
