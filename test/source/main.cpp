@@ -1,3 +1,4 @@
+#include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
 #include "TotoGL/RenderObject/Skydome.hpp"
@@ -48,6 +49,17 @@ int main(int /* argc */, const char** /* argv */) {
     kirbies[3].get().translate({ 0, -2, 0 });
     kirbies[4].get().translate({ 2, 0, 0 });
     kirbies[5].get().translate({ -2, 0, 0 });
+
+    // look at this factory tree :D
+    auto cube = TotoGL::RenderObjectFactory::create(
+        TotoGL::RenderObject(
+            TotoGL::MeshFactory::create(
+                TotoGL::Mesh::cube(.1, .1, .1)),
+            TotoGL::ShaderMaterialFactory::create(
+                TotoGL::ShaderMaterial(
+                    std::ifstream("assets/shader/shader.vert"),
+                    std::ifstream("assets/shader/phong.frag")))));
+    scene.add(cube);
 
     auto skydome_texture = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")));

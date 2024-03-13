@@ -14,7 +14,10 @@ namespace TotoGL {
  */
 class RenderObject {
 public:
+    RenderObject(MeshInstanceId&& mesh, ShaderMaterialInstanceId&& material);
     RenderObject(const MeshInstanceId& mesh, const ShaderMaterialInstanceId& material);
+    RenderObject(RenderObject&& other);
+    ~RenderObject();
 
     void draw();
     static void unbind();
@@ -37,6 +40,7 @@ private:
     MeshInstanceId _mesh;
     ShaderMaterialInstanceId _material;
     Transform _transform;
+    bool _is_owner = true;
 };
 
 using RenderObjectFactory = Factory<RenderObject>;

@@ -8,7 +8,8 @@ class Skydome {
 public:
     Skydome();
     Skydome(Texture& texture);
-    ~Skydome() = default;
+    Skydome(Skydome&&);
+    ~Skydome();
 
     RenderObject& object() const { return RenderObjectFactory::get(_object); }
 
@@ -16,6 +17,7 @@ public:
 
 private:
     RenderObjectInstanceId _object;
+    bool _is_owner = true;
 };
 
 using SkydomeFactory = Factory<Skydome>;

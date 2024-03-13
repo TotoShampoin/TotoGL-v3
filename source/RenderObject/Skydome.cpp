@@ -28,6 +28,18 @@ Skydome::Skydome(Texture& texture)
     setTexture(texture);
 }
 
+Skydome::Skydome(Skydome&& other)
+    : _object(other._object)
+    , _is_owner(other._is_owner) {
+    other._is_owner = false;
+}
+
+Skydome::~Skydome() {
+    if (_is_owner) {
+        RenderObjectFactory::destroy(_object);
+    }
+}
+
 void Skydome::setTexture(Texture& texture) {
     auto& material = object().material();
     material.uniform("u_texture", texture);
