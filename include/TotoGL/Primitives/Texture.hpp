@@ -1,7 +1,5 @@
 #pragma once
 
-// #include "TotoGL/Impl.hpp"
-
 #include "TotoGL/GPUPointer/Texture.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include <fstream>
