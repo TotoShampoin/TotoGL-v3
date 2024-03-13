@@ -50,6 +50,8 @@ public:
         if (id == NULL_INSTANCE)
             throw std::out_of_range("ObjectInstanceId points to null value");
         auto& factory = factoryInstance();
+        if (!factory._object_instances.contains(id))
+            throw std::out_of_range("ObjectInstanceId points to non-existing object");
         return factory._object_instances.at(id);
     }
 
