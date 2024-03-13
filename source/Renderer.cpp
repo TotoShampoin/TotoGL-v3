@@ -10,6 +10,7 @@
 #include "TotoGL/RenderObject/Light.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/Scene.hpp"
+#include "TotoGL/RenderObject/Skydome.hpp"
 
 namespace TotoGL {
 
@@ -41,12 +42,20 @@ void Renderer::clear(bool color, bool depth, bool stencil) {
 void Renderer::render(TotoGL::Scene& scene, TotoGL::Camera& camera) {
     std::vector<std::reference_wrapper<TotoGL::RenderObject>> objects;
     std::vector<std::reference_wrapper<TotoGL::Light>> lights;
+    std::vector<std::reference_wrapper<TotoGL::Skydome>> skydomes;
     for (auto& component : scene.sceneComponents()) {
         if (std::holds_alternative<std::reference_wrapper<TotoGL::RenderObject>>(component)) {
             objects.push_back(std::get<std::reference_wrapper<TotoGL::RenderObject>>(component));
         } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Light>>(component)) {
             lights.push_back(std::get<std::reference_wrapper<TotoGL::Light>>(component));
+        } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Skydome>>(component)) {
+            skydomes.push_back(std::get<std::reference_wrapper<TotoGL::Skydome>>(component));
         }
+    }
+    clear();
+    if (!skydomes.empty()) {
+        render(skydomes[0].get().object(), camera);
+        clear(false, true, false);
     }
     for (auto& object : objects) {
         render(object, camera, lights);

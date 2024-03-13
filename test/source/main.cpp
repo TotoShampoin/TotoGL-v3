@@ -49,9 +49,12 @@ int main(int /* argc */, const char** /* argv */) {
     kirbies[4].get().translate({ 2, 0, 0 });
     kirbies[5].get().translate({ -2, 0, 0 });
 
-    auto skydome_texture_id = TotoGL::TextureFactory::create(
+    auto skydome_texture = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")));
-    auto skydome = TotoGL::Skydome(TotoGL::TextureFactory::get(skydome_texture_id));
+    auto skydome = TotoGL::SkydomeFactory::create(
+        TotoGL::Skydome(TotoGL::TextureFactory::get(skydome_texture)));
+    // this don't worl :(
+    scene.add(skydome);
 
     // auto lights = std::vector<TotoGL::Light>();
     {
@@ -102,7 +105,6 @@ int main(int /* argc */, const char** /* argv */) {
 
         window.draw([&]() {
             renderer.clear();
-            renderer.render(skydome.object(), camera);
             renderer.clear(false, true, false);
             renderer.render(scene, camera);
         });

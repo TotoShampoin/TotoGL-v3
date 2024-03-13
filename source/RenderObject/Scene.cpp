@@ -14,20 +14,32 @@ std::vector<SceneComponentReference> Scene::sceneComponents() const {
             scene_components.push_back(Factory<Light>::get(std::get<LightInstanceId>(id)));
         } else if (std::holds_alternative<RenderObjectInstanceId>(id)) {
             scene_components.push_back(Factory<RenderObject>::get(std::get<RenderObjectInstanceId>(id)));
+        } else if (std::holds_alternative<SkydomeInstanceId>(id)) {
+            scene_components.push_back(Factory<Skydome>::get(std::get<SkydomeInstanceId>(id)));
         }
     }
     return scene_components;
 }
 
-Scene& Scene::add(const LightInstanceId& light) {
-    _scene_components.push_back(light);
+Scene& Scene::add(const SceneComponentInstanceId& id) {
+    _scene_components.push_back(id);
     return *this;
 }
 
-Scene& Scene::add(const RenderObjectInstanceId& object) {
-    _scene_components.push_back(object);
-    return *this;
-}
+// Scene& Scene::add(const LightInstanceId& light) {
+//     _scene_components.push_back(light);
+//     return *this;
+// }
+
+// Scene& Scene::add(const RenderObjectInstanceId& object) {
+//     _scene_components.push_back(object);
+//     return *this;
+// }
+
+// Scene& Scene::add(const SkydomeInstanceId& skydome) {
+//     _scene_components.push_back(skydome);
+//     return *this;
+// }
 
 Scene& Scene::clear() {
     _scene_components.clear();
