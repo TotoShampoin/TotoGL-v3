@@ -2,6 +2,7 @@
 
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/Window.hpp"
+#include <glm/exponential.hpp>
 
 namespace TotoGL {
 
@@ -55,7 +56,7 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
         rotate(-event.dy / height * PI, -event.dx / height * PI);
     });
     window.on(SCROLL, [&](const VectorEvent& event) {
-        _distance -= event.dy;
+        _distance *= glm::pow(1.25, -event.dy);
         if (_distance < glm::epsilon<float>())
             _distance = glm::epsilon<float>();
     });
