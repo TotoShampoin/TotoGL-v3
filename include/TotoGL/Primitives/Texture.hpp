@@ -16,6 +16,9 @@ public:
     void bind();
     static void unbind();
 
+    // TEMPORARY
+    TextureId& texId() { return _texture; }
+
 private:
     TextureId _texture;
     int _width, _height, _color_depth;

@@ -1,22 +1,12 @@
+#include "TotoGL/GPUPointer/GPUPointer.hpp"
+#include "TotoGL/GPUPointer/Texture.hpp"
+#include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
-#include "TotoGL/RenderObject/Skydome.hpp"
+#include "TotoGL/Window.hpp"
 #include <TotoGL/TotoGL.hpp>
-
-#include <TotoGL/RenderObject/Light.hpp>
 #include <fstream>
-#include <glm/geometric.hpp>
-#include <glm/glm.hpp>
-
-void event(
-    TotoGL::Window& window,
-    TotoGL::Camera& camera,
-    TotoGL::FreeUseControl& control);
-
-TotoGL::ShaderMaterialInstanceId getMaterial();
-TotoGL::RenderObjectInstanceId makeObject();
-TotoGL::RenderObjectInstanceId makeHelper();
 
 int main(int /* argc */, const char** /* argv */) {
     using TotoGL::ShaderType::FRAGMENT;
@@ -28,96 +18,132 @@ int main(int /* argc */, const char** /* argv */) {
     using TotoGL::VectorEventName::FRAMEBUFFER_SIZE;
     using TotoGL::VectorEventName::SCROLL;
 
-    constexpr int WIDTH = 1600;
-    constexpr int HEIGHT = 800;
-    constexpr float FOV = glm::radians(70.f);
+    constexpr int WIDTH = 960;
+    constexpr int HEIGHT = 720;
 
-    auto window = TotoGL::Window(WIDTH, HEIGHT, "a title");
+    int width = WIDTH;
+    int height = HEIGHT;
+    float fov = glm::radians(70.f);
+
+    auto window = TotoGL::Window(width, height, "a title");
     auto renderer = TotoGL::Renderer();
-
     auto scene = TotoGL::Scene();
-
-    auto kirbies = std::vector<std::reference_wrapper<TotoGL::RenderObject>>();
-    for (int i = 0; i < 6; i++) {
-        auto kirby = makeObject();
-        scene.add(kirby);
-        kirbies.push_back(*kirby);
-    }
-    kirbies[0].get().translate({ 0, 0, 2 });
-    kirbies[1].get().translate({ 0, 0, -2 });
-    kirbies[2].get().translate({ 0, 2, 0 });
-    kirbies[3].get().translate({ 0, -2, 0 });
-    kirbies[4].get().translate({ 2, 0, 0 });
-    kirbies[5].get().translate({ -2, 0, 0 });
-
-    // look at this factory tree :D
-    auto cube = TotoGL::RenderObjectFactory::create(
-        TotoGL::RenderObject(
-            TotoGL::MeshFactory::create(
-                TotoGL::Mesh::cube(.1, .1, .1)),
-            TotoGL::ShaderMaterialFactory::create(
-                TotoGL::ShaderMaterial(
-                    std::ifstream("assets/shader/shader.vert"),
-                    std::ifstream("assets/shader/phong.frag")))));
-    scene.add(cube);
-
-    auto skydome_texture = TotoGL::TextureFactory::create(
-        TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")));
-    auto skydome = TotoGL::SkydomeFactory::create(
-        TotoGL::Skydome(*skydome_texture));
-    // this don't worl :(
-    scene.add(skydome);
-
-    // auto lights = std::vector<TotoGL::Light>();
-    {
-        auto ambient_id = TotoGL::LightFactory::create(
-            TotoGL::Light(glm::vec3(1, 1, 1), .25, TotoGL::LightType::AMBIENT));
-        auto dirlight_id = TotoGL::LightFactory::create(
-            TotoGL::Light(glm::vec3(1, 1, 1), 1, TotoGL::LightType::DIRECTIONAL));
-
-        auto& dirlight = *dirlight_id;
-        dirlight.position() = { 3, 3, 3 };
-        dirlight.transformation().lookAt({ 0, 0, 0 });
-
-        scene.add(ambient_id);
-        scene.add(dirlight_id);
-    }
-
-    auto& material = kirbies[0].get().material();
-
-    auto camera = TotoGL::Camera::Perspective(FOV, (float)WIDTH / HEIGHT, .1f, 100.f);
+    auto camera = TotoGL::Camera::Perspective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
     auto clock = TotoGL::Clock();
 
-    auto orbit = TotoGL::OrbitControl(0, 0, 8);
-    auto fps = TotoGL::FreeUseControl();
-    fps.speed() = 5;
-    fps.sensitivity() = 3;
+    auto control = TotoGL::FreeUseControl();
+    control.bindEvents(window);
 
-    event(window, camera, fps);
+    auto sky = TotoGL::SkydomeFactory::create(
+        TotoGL::Skydome(
+            *TotoGL::TextureFactory::create(
+                TotoGL::Texture(std::ifstream("assets/textures/skydome.jpg")))));
 
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
+    auto light = TotoGL::LightFactory::create(
+        TotoGL::Light({ 1, 1, 1 }, 1, TotoGL::LightType::DIRECTIONAL));
+    light->direction() = glm::normalize(glm::vec3 { 1, -1, 1 });
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    auto plane = TotoGL::RenderObjectFactory::create(
+        TotoGL::RenderObject(
+            TotoGL::MeshFactory::create(
+                TotoGL::Mesh::quad()),
+            TotoGL::ShaderMaterialFactory::create(
+                TotoGL::ShaderMaterial(
+                    TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
+                    TotoGL::FragmentShader(std::ifstream("assets/shaders/shader.frag"))))));
+
+    auto kirby = TotoGL::RenderObjectFactory::create(
+        TotoGL::RenderObject(
+            TotoGL::MeshFactory::create(
+                TotoGL::Mesh::sphere(1, 32, 32)),
+            TotoGL::ShaderMaterialFactory::create(
+                TotoGL::ShaderMaterial(
+                    TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
+                    TotoGL::FragmentShader(std::ifstream("assets/shaders/shader.frag"))))));
+
+    auto kirby_texture = TotoGL::TextureFactory::create(
+        TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
+
+    /* Frame buffer test */
+    auto render_texture = TotoGL::TextureFactory::create(
+        TotoGL::Texture());
+
+    render_texture->bind();
+    auto framebuffer = TotoGL::FrameBufferId();
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
+
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA,
+        GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    auto depth_buffer = TotoGL::RenderBufferId();
+    glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer.id());
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIDTH, HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer.id());
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, render_texture->texId().id(), 0);
+    GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
+    glDrawBuffers(1, draw_buffers);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "Framebuffer is not complete!" << std::endl;
+    }
+    /* */
+
+    plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
+    plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
+
+    kirby->position() = { 2, 0, 0 };
+    kirby->material().uniform("u_texture", kirby_texture);
+
+    plane->material().uniform("u_texture", render_texture);
+
+    camera.position() = { 3, 1, 2 };
+    camera.lookAt({ 0, 0, 0 });
+
+    scene.add(sky);
+    scene.add(light);
+    scene.add(plane);
+    scene.add(kirby);
 
     renderer.clearColor({ 0, 0, 0, 1 });
-    while (!window.shouldClose()) {
-        float time = clock.getTime();
-        float delta = clock.getDeltaTime();
 
-        for (auto& kirby : kirbies) {
-            kirby.get().rotation() += glm::vec3(2, 3, 5) * delta / 10.f;
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
+    glViewport(0, 0, WIDTH, HEIGHT);
+    renderer.clear();
+    renderer.render(scene, camera);
+
+    window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& e) {
+        width = e.x;
+        height = e.y;
+        camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
+    });
+
+    window.on(KEY, [&](const TotoGL::InputEvent& e) {
+        if (e.action && e.button == GLFW_KEY_R) {
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
+            glViewport(0, 0, WIDTH, HEIGHT);
+            plane->material().uniform("u_texture", kirby_texture);
+            renderer.clear();
+            renderer.render(scene, camera);
         }
+    });
 
-        fps.update(delta);
-        fps.apply(camera);
+    while (!window.shouldClose()) {
+        auto delta_time = clock.getDeltaTime();
+        control.update(delta_time);
+        control.apply(camera);
 
-        material.uniform("u_time", time);
+        kirby->lookAt(camera.position());
+        kirby->rotate(-glm::pi<float>() / 2, camera.transformation().rotationMatrix()[1]);
 
         window.draw([&]() {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, width, height);
+            plane->material().uniform("u_texture", render_texture);
             renderer.clear();
-            renderer.clear(false, true, false);
             renderer.render(scene, camera);
         });
     }
