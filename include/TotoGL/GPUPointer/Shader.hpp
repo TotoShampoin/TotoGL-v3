@@ -1,8 +1,7 @@
 #pragma once
 
-#include <TotoGL/GL.hpp> // MUST STAY ON TOP
-
 #include "TotoGL/GPUPointer/GPUPointer.hpp"
+#include <GL/glew.h>
 #include <variant>
 
 namespace TotoGL {

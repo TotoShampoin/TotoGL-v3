@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TotoGL/GL.hpp> // MUST STAY ON TOP
+#include <GL/glew.h> // MUST STAY ON TOP
 
 #include "./GPUPointer.hpp"
 
