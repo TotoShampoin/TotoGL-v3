@@ -1,6 +1,6 @@
 #include "TotoGL/Renderer.hpp"
 
-#include <GL/glew.h>
+#include <TotoGL/GL.hpp> // MUST STAY ON TOP
 
 #include <format>
 #include <stdexcept>

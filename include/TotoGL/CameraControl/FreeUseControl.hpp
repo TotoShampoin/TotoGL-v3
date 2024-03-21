@@ -3,7 +3,7 @@
 #include "TotoGL/Primitives/Clock.hpp"
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/Window.hpp"
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
 namespace TotoGL {
 

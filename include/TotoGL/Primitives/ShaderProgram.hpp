@@ -1,11 +1,12 @@
 #pragma once
 
+#include <TotoGL/GL.hpp> // MUST STAY ON TOP
+
 #include "TotoGL/GPUPointer/Shader.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
 #include "TotoGL/Primitives/Uniform.hpp"
-#include <GL/glew.h>
 #include <array>
 #include <functional>
 #include <map>
