@@ -1,10 +1,6 @@
 #include "TotoGL/Window.hpp"
 
-#include "TotoGL/Misc/EventListener.hpp"
-#include <GLFW/glfw3.h>
-#include <functional>
 #include <stdexcept>
-#include <string>
 
 namespace TotoGL {
 

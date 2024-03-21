@@ -1,8 +1,6 @@
 #include "TotoGL/CameraControl/FreeUseControl.hpp"
 
-#include "TotoGL/RenderObject/Camera.hpp"
-#include "TotoGL/Window.hpp"
-#include <GLFW/glfw3.h>
+#include <TotoGL/GL.hpp>
 #include <glm/geometric.hpp>
 
 namespace TotoGL {

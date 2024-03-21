@@ -1,7 +1,8 @@
 #pragma once
 
+#include <TotoGL/GL.hpp>
+
 #include "Misc/EventListener.hpp"
-#include <GLFW/glfw3.h>
 #include <functional>
 #include <string>
 
