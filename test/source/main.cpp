@@ -1,5 +1,4 @@
-#include "TotoGL/GPUPointer/GPUPointer.hpp"
-#include "TotoGL/GPUPointer/Texture.hpp"
+#include "TotoGL/Primitives/BufferTexture.hpp"
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
@@ -64,33 +63,8 @@ int main(int /* argc */, const char** /* argv */) {
     auto kirby_texture = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
 
-    /* Frame buffer test */
-    auto render_texture = TotoGL::TextureFactory::create(
-        TotoGL::Texture());
-
-    render_texture->bind();
-    auto framebuffer = TotoGL::FrameBufferId();
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
-
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA,
-        GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    auto depth_buffer = TotoGL::RenderBufferId();
-    glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer.id());
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIDTH, HEIGHT);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer.id());
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, render_texture->texId().id(), 0);
-    GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
-    glDrawBuffers(1, draw_buffers);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Framebuffer is not complete!" << std::endl;
-    }
-    /* */
+    auto render_texture = TotoGL::BufferTextureFactory::create(
+        TotoGL::BufferTexture(WIDTH, HEIGHT));
 
     plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
     plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
@@ -98,7 +72,7 @@ int main(int /* argc */, const char** /* argv */) {
     kirby->position() = { 2, 0, 0 };
     kirby->material().uniform("u_texture", kirby_texture);
 
-    plane->material().uniform("u_texture", render_texture);
+    plane->material().uniform("u_texture", render_texture->texture());
 
     camera.position() = { 3, 1, 2 };
     camera.lookAt({ 0, 0, 0 });
@@ -110,8 +84,7 @@ int main(int /* argc */, const char** /* argv */) {
 
     renderer.clearColor({ 0, 0, 0, 1 });
 
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
-    glViewport(0, 0, WIDTH, HEIGHT);
+    render_texture->bind();
     renderer.clear();
     renderer.render(scene, camera);
 
@@ -123,8 +96,9 @@ int main(int /* argc */, const char** /* argv */) {
 
     window.on(KEY, [&](const TotoGL::InputEvent& e) {
         if (e.action && e.button == GLFW_KEY_R) {
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.id());
-            glViewport(0, 0, WIDTH, HEIGHT);
+            camera.position() = { 1, 1, 2 };
+            camera.lookAt({ 0, 0, 0 });
+            render_texture->bind();
             plane->material().uniform("u_texture", kirby_texture);
             renderer.clear();
             renderer.render(scene, camera);
@@ -140,9 +114,8 @@ int main(int /* argc */, const char** /* argv */) {
         kirby->rotate(-glm::pi<float>() / 2, camera.transformation().rotationMatrix()[1]);
 
         window.draw([&]() {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, width, height);
-            plane->material().uniform("u_texture", render_texture);
+            TotoGL::BufferTexture::unbind(width, height);
+            plane->material().uniform("u_texture", render_texture->texture());
             renderer.clear();
             renderer.render(scene, camera);
         });

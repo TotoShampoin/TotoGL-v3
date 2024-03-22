@@ -9,19 +9,23 @@ namespace TotoGL {
 class Texture {
 public:
     Texture() = default;
+    Texture(const int& width, const int& height, const int& color_depth);
     Texture(std::ifstream&& file);
 
+    void create(const int& width, const int& height, const int& color_depth);
     void load(std::ifstream&& file);
 
     void bind();
     static void unbind();
 
-    // TEMPORARY
-    TextureId& texId() { return _texture; }
+protected:
+    GLuint id() { return _texture.id(); }
 
 private:
     TextureId _texture;
     int _width, _height, _color_depth;
+
+    friend class BufferTexture;
 };
 
 using TextureFactory = Factory<Texture>;
