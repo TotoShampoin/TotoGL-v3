@@ -3,6 +3,7 @@
 #include "TotoGL/GPUPointer/Texture.hpp"
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
+#include <functional>
 
 namespace TotoGL {
 
@@ -11,8 +12,7 @@ public:
     BufferTexture() = default;
     BufferTexture(const int& width, const int& height);
 
-    void bind();
-    static void unbind(int width, int height);
+    void draw(const std::function<void()>& callback);
 
     void copy(const BufferTexture& other);
 

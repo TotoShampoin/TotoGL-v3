@@ -25,21 +25,21 @@ BufferTexture::BufferTexture(const int& width, const int& height)
     unbindFrameBuffer();
 }
 
-void BufferTexture::bind() {
+void BufferTexture::draw(const std::function<void()>& callback) {
     bindFrameBuffer();
     glViewport(0, 0, _width, _height);
-}
-void BufferTexture::unbind(int width, int height) {
+    callback();
     unbindFrameBuffer();
-    glViewport(0, 0, width, height);
 }
 
 void BufferTexture::copy(const BufferTexture& other) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, other._framebuffer.id());
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer.id());
+    glBlitFramebuffer(0, 0, other._width, other._height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     _width = other._width;
     _height = other._height;
-    bindTexture();
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, _width, _height, 0);
-    unbindTexture();
 }
 
 void BufferTexture::bindFrameBuffer() {

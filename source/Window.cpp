@@ -32,6 +32,7 @@ void Window::init() {
 
 void Window::draw(const std::function<void(void)>& callback) {
     glfwMakeContextCurrent(_glfw_window);
+    glViewport(0, 0, size()[0], size()[1]);
     callback();
     glfwSwapBuffers(_glfw_window);
     glfwPollEvents();

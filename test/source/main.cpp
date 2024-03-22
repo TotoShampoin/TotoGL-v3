@@ -73,6 +73,7 @@ int main(int /* argc */, const char** /* argv */) {
 
     kirby->position() = { 2, 0, 0 };
     kirby->material().uniform("u_texture", kirby_texture);
+    plane->material().uniform("u_texture", render_texture_2->texture());
 
     camera.position() = { 3, 1, 2 };
     camera.lookAt({ 0, 0, 0 });
@@ -82,37 +83,35 @@ int main(int /* argc */, const char** /* argv */) {
     scene.add(plane);
     scene.add(kirby);
 
-    renderer.clearColor({ 0, 0, 0, 1 });
-
-    render_texture->bind();
-    renderer.clear();
-    renderer.render(scene, camera);
-
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& e) {
         width = e.x;
         height = e.y;
-        camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
     });
 
     while (!window.shouldClose()) {
+        auto time = clock.getTime();
         auto delta_time = clock.getDeltaTime();
+
         control.update(delta_time);
         control.apply(camera);
 
         kirby->lookAt(camera.position());
         kirby->rotate(-glm::pi<float>() / 2, camera.transformation().rotationMatrix()[1]);
 
-        window.draw([&]() {
-            TotoGL::BufferTexture::unbind(width, height);
-            plane->material().uniform("u_texture", render_texture_2->texture());
+        render_texture->draw([&]() {
+            // camera.position() = { 3, 1, 2 };
+            // camera.lookAt({ 0, 0, 0 });
+            camera.setPersective(fov, static_cast<float>(WIDTH) / HEIGHT, 0.1f, 1000.f);
             renderer.clear();
             renderer.render(scene, camera);
         });
-
-        render_texture->bind();
-        renderer.clear();
-        renderer.render(scene, camera);
         render_texture_2->copy(*render_texture);
+
+        window.draw([&]() {
+            camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
+            renderer.clear();
+            renderer.render(scene, camera);
+        });
     }
 
     return 0;
