@@ -14,6 +14,8 @@ public:
     void bind();
     static void unbind(int width, int height);
 
+    void copy(const BufferTexture& other);
+
     TextureInstanceId texture() const { return _texture; }
     Texture& texture() { return *_texture; }
 

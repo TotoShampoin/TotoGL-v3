@@ -65,14 +65,14 @@ int main(int /* argc */, const char** /* argv */) {
 
     auto render_texture = TotoGL::BufferTextureFactory::create(
         TotoGL::BufferTexture(WIDTH, HEIGHT));
+    auto render_texture_2 = TotoGL::BufferTextureFactory::create(
+        TotoGL::BufferTexture(WIDTH, HEIGHT));
 
     plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
     plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
 
     kirby->position() = { 2, 0, 0 };
     kirby->material().uniform("u_texture", kirby_texture);
-
-    plane->material().uniform("u_texture", render_texture->texture());
 
     camera.position() = { 3, 1, 2 };
     camera.lookAt({ 0, 0, 0 });
@@ -94,17 +94,6 @@ int main(int /* argc */, const char** /* argv */) {
         camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
     });
 
-    window.on(KEY, [&](const TotoGL::InputEvent& e) {
-        if (e.action && e.button == GLFW_KEY_R) {
-            camera.position() = { 1, 1, 2 };
-            camera.lookAt({ 0, 0, 0 });
-            render_texture->bind();
-            plane->material().uniform("u_texture", kirby_texture);
-            renderer.clear();
-            renderer.render(scene, camera);
-        }
-    });
-
     while (!window.shouldClose()) {
         auto delta_time = clock.getDeltaTime();
         control.update(delta_time);
@@ -115,10 +104,15 @@ int main(int /* argc */, const char** /* argv */) {
 
         window.draw([&]() {
             TotoGL::BufferTexture::unbind(width, height);
-            plane->material().uniform("u_texture", render_texture->texture());
+            plane->material().uniform("u_texture", render_texture_2->texture());
             renderer.clear();
             renderer.render(scene, camera);
         });
+
+        render_texture->bind();
+        renderer.clear();
+        renderer.render(scene, camera);
+        render_texture_2->copy(*render_texture);
     }
 
     return 0;

@@ -34,6 +34,14 @@ void BufferTexture::unbind(int width, int height) {
     glViewport(0, 0, width, height);
 }
 
+void BufferTexture::copy(const BufferTexture& other) {
+    _width = other._width;
+    _height = other._height;
+    bindTexture();
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, _width, _height, 0);
+    unbindTexture();
+}
+
 void BufferTexture::bindFrameBuffer() {
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer.id());
 }
