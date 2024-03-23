@@ -2,6 +2,7 @@
 #include "TotoGL/Primitives/Shader.hpp"
 #include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
+#include "TotoGL/RenderObject/Scene.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
 #include "TotoGL/Window.hpp"
 #include <TotoGL/TotoGL.hpp>
@@ -26,9 +27,10 @@ int main(int /* argc */, const char** /* argv */) {
 
     auto window = TotoGL::Window(width, height, "a title");
     auto renderer = TotoGL::Renderer();
-    auto scene = TotoGL::Scene();
-    auto camera = TotoGL::Camera::Perspective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
+    auto camera = TotoGL::Camera::Perspective(fov, static_cast<float>(width) / height, 0.1f, 4.f);
     auto clock = TotoGL::Clock();
+
+    auto scene = TotoGL::SceneFactory::create();
 
     auto control = TotoGL::FreeUseControl();
     control.bindEvents(window);
@@ -40,7 +42,7 @@ int main(int /* argc */, const char** /* argv */) {
 
     auto light = TotoGL::LightFactory::create(
         TotoGL::Light({ 1, 1, 1 }, 1, TotoGL::LightType::DIRECTIONAL));
-    light->direction() = glm::normalize(glm::vec3 { 1, -1, 1 });
+    light->setDirection({ 1, -1, 1 });
 
     auto plane = TotoGL::RenderObjectFactory::create(
         TotoGL::RenderObject(
@@ -58,7 +60,12 @@ int main(int /* argc */, const char** /* argv */) {
             TotoGL::ShaderMaterialFactory::create(
                 TotoGL::ShaderMaterial(
                     TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
-                    TotoGL::FragmentShader(std::ifstream("assets/shaders/shader.frag"))))));
+                    TotoGL::FragmentShader(std::ifstream("assets/shaders/phong.frag"))))));
+
+    auto override_shader = TotoGL::ShaderMaterialFactory::create(
+        TotoGL::ShaderMaterial(
+            TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
+            TotoGL::FragmentShader(std::ifstream("assets/shaders/depth.frag"))));
 
     auto kirby_texture = TotoGL::TextureFactory::create(
         TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
@@ -68,6 +75,7 @@ int main(int /* argc */, const char** /* argv */) {
     auto render_texture_2 = TotoGL::BufferTextureFactory::create(
         TotoGL::BufferTexture(WIDTH, HEIGHT));
 
+    plane->position() = { 0, 0, -2 };
     plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
     plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
 
@@ -78,10 +86,10 @@ int main(int /* argc */, const char** /* argv */) {
     camera.position() = { 3, 1, 2 };
     camera.lookAt({ 0, 0, 0 });
 
-    scene.add(sky);
-    scene.add(light);
-    scene.add(plane);
-    scene.add(kirby);
+    scene->add(sky);
+    scene->add(light);
+    scene->add(plane);
+    scene->add(kirby);
 
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& e) {
         width = e.x;
@@ -101,16 +109,17 @@ int main(int /* argc */, const char** /* argv */) {
         render_texture->draw([&]() {
             // camera.position() = { 3, 1, 2 };
             // camera.lookAt({ 0, 0, 0 });
-            camera.setPersective(fov, static_cast<float>(WIDTH) / HEIGHT, 0.1f, 1000.f);
+            camera.setPersective(fov, static_cast<float>(WIDTH) / HEIGHT, 0.1f, 5.f);
             renderer.clear();
-            renderer.render(scene, camera);
+            // renderer.render(scene, camera);
+            renderer.renderOverrideMaterial(*scene, camera, *override_shader);
         });
         render_texture_2->copy(*render_texture);
 
         window.draw([&]() {
-            camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 1000.f);
+            camera.setPersective(fov, static_cast<float>(width) / height, 0.1f, 10.f);
             renderer.clear();
-            renderer.render(scene, camera);
+            renderer.render(*scene, camera);
         });
     }
 
