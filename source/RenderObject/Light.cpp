@@ -26,4 +26,8 @@ glm::vec3 Light::direction() {
     return direction;
 }
 
+void Light::setDirection(const glm::vec3& direction) {
+    _transform.lookAt(_transform.translation() + direction);
+}
+
 } // namespace TotoGL

@@ -28,6 +28,7 @@ public:
     Transform& transformation() { return _transform; }
     glm::vec3& position() { return _transform.translation(); }
     glm::vec3 direction();
+    void setDirection(const glm::vec3& direction);
 
 private:
     Transform _transform;
