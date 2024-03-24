@@ -40,14 +40,13 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
 
     static bool is_holding;
 
-    window.on(MOUSE_BUTTON, [&](const InputEvent& event) {
+    window.on(MOUSE_BUTTON, [&, focus_stolen](const InputEvent& event) {
         if (event.button == GLFW_MOUSE_BUTTON_1) {
             is_holding = bool(event.action);
         }
     });
     window.on(CURSOR_POSITION, [&, focus_stolen](const VectorEvent& event) {
         if (focus_stolen()) {
-            is_holding = false;
             return;
         }
         if (!is_holding)
@@ -55,7 +54,10 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
         auto [width, height] = window.size();
         rotate(-event.dy / height * PI, -event.dx / height * PI);
     });
-    window.on(SCROLL, [&](const VectorEvent& event) {
+    window.on(SCROLL, [&, focus_stolen](const VectorEvent& event) {
+        if (focus_stolen()) {
+            return;
+        }
         _distance *= glm::pow(1.25, -event.dy);
         if (_distance < glm::epsilon<float>())
             _distance = glm::epsilon<float>();
