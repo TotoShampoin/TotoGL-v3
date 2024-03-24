@@ -36,6 +36,9 @@ public:
     Mesh& mesh() { return MeshFactory::get(_mesh); }
     ShaderMaterial& material() { return ShaderMaterialFactory::get(_material); }
 
+    void setMesh(const MeshInstanceId& mesh) { _mesh = mesh; }
+    void setMaterial(const ShaderMaterialInstanceId& material) { _material = material; }
+
 private:
     MeshInstanceId _mesh;
     ShaderMaterialInstanceId _material;
