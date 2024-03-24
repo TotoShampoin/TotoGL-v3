@@ -57,8 +57,14 @@ void Renderer::render(TotoGL::Scene& scene, TotoGL::Camera& camera) {
         render(skydomes[0].get().object(), camera);
         clear(false, true, false);
     }
-    for (auto& object : objects) {
-        render(object, camera, lights);
+    if (!lights.empty()) {
+        for (auto& object : objects) {
+            render(object, camera, lights);
+        }
+    } else {
+        for (auto& object : objects) {
+            render(object, camera);
+        }
     }
 }
 
