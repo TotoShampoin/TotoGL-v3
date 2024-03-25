@@ -16,10 +16,9 @@ Seconds Clock::getDeltaTime() {
     using SystemSecond = std::chrono::duration<double, std::ratio<1, 1>>;
     using std::chrono::duration_cast;
 
-    static auto last = timeNow();
     auto now = timeNow();
-    auto delta = duration_cast<SystemSecond>(now - last).count();
-    last = now;
+    auto delta = duration_cast<SystemSecond>(now - _last).count();
+    _last = now;
     return delta;
 }
 
