@@ -1,10 +1,3 @@
-#include "TotoGL/Primitives/BufferTexture.hpp"
-#include "TotoGL/Primitives/Shader.hpp"
-#include "TotoGL/RenderObject/Mesh.hpp"
-#include "TotoGL/RenderObject/RenderObject.hpp"
-#include "TotoGL/RenderObject/Scene.hpp"
-#include "TotoGL/RenderObject/ShaderMaterial.hpp"
-#include "TotoGL/Window.hpp"
 #include <TotoGL/TotoGL.hpp>
 #include <fstream>
 
@@ -97,7 +90,6 @@ int main(int /* argc */, const char** /* argv */) {
     });
 
     while (!window.shouldClose()) {
-        auto time = clock.getTime();
         auto delta_time = clock.getDeltaTime();
 
         control.update(delta_time);
@@ -107,12 +99,9 @@ int main(int /* argc */, const char** /* argv */) {
         kirby->rotate(-glm::pi<float>() / 2, camera.transformation().rotationMatrix()[1]);
 
         render_texture->draw([&]() {
-            // camera.position() = { 3, 1, 2 };
-            // camera.lookAt({ 0, 0, 0 });
             camera.setPersective(fov, static_cast<float>(WIDTH) / HEIGHT, 0.1f, 5.f);
             renderer.clear();
-            // renderer.render(scene, camera);
-            renderer.renderOverrideMaterial(*scene, camera, *override_shader);
+            renderer.render(*scene, camera, *override_shader);
         });
         render_texture_2->copy(*render_texture);
 
