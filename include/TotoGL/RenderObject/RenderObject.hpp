@@ -36,14 +36,18 @@ public:
     Mesh& mesh() { return MeshFactory::get(_mesh); }
     ShaderMaterial& material() { return ShaderMaterialFactory::get(_material); }
 
-    void setMesh(const MeshInstanceId& mesh) { _mesh = mesh; }
-    void setMaterial(const ShaderMaterialInstanceId& material) { _material = material; }
+    void setMesh(const MeshInstanceId& mesh);
+    void setMesh(MeshInstanceId&& mesh);
+
+    void setMaterial(ShaderMaterialInstanceId&& material);
+    void setMaterial(const ShaderMaterialInstanceId& material);
 
 private:
     MeshInstanceId _mesh;
     ShaderMaterialInstanceId _material;
     Transform _transform;
-    bool _is_owner = true;
+    bool _owns_mesh = true;
+    bool _owns_material = true;
 };
 
 using RenderObjectFactory = Factory<RenderObject>;

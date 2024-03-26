@@ -10,24 +10,30 @@ namespace TotoGL {
 RenderObject::RenderObject(MeshInstanceId&& mesh, ShaderMaterialInstanceId&& material)
     : _mesh(std::move(mesh))
     , _material(std::move(material))
-    , _is_owner(true) { }
+    , _owns_mesh(true)
+    , _owns_material(true) { }
 
 RenderObject::RenderObject(const MeshInstanceId& mesh, const ShaderMaterialInstanceId& material)
     : _mesh(mesh)
     , _material(material)
-    , _is_owner(false) { }
+    , _owns_mesh(false)
+    , _owns_material(false) { }
 
 RenderObject::RenderObject(RenderObject&& other)
     : _mesh(std::move(other._mesh))
     , _material(std::move(other._material))
     , _transform(std::move(other._transform))
-    , _is_owner(other._is_owner) {
-    other._is_owner = false;
+    , _owns_mesh(other._owns_mesh)
+    , _owns_material(other._owns_material) {
+    other._owns_mesh = false;
+    other._owns_material = false;
 }
 
 RenderObject::~RenderObject() {
-    if (_is_owner) {
+    if (_owns_mesh) {
         MeshFactory::destroy(_mesh);
+    }
+    if (_owns_material) {
         ShaderMaterialFactory::destroy(_material);
     }
 }
@@ -63,6 +69,38 @@ RenderObject& RenderObject::rotate(const float& angle, const glm::vec3& axis) {
 
 void RenderObject::lookAt(const glm::vec3& target, const glm::vec3& up) {
     _transform.lookAt(target, up);
+}
+
+void RenderObject::setMesh(const MeshInstanceId& mesh) {
+    if (_owns_mesh) {
+        MeshFactory::destroy(_mesh);
+    }
+    _mesh = mesh;
+    _owns_mesh = false;
+}
+
+void RenderObject::setMaterial(const ShaderMaterialInstanceId& material) {
+    if (_owns_material) {
+        ShaderMaterialFactory::destroy(_material);
+    }
+    _material = material;
+    _owns_material = false;
+}
+
+void RenderObject::setMesh(MeshInstanceId&& mesh) {
+    if (_owns_mesh) {
+        MeshFactory::destroy(_mesh);
+    }
+    _mesh = std::move(mesh);
+    _owns_mesh = true;
+}
+
+void RenderObject::setMaterial(ShaderMaterialInstanceId&& material) {
+    if (_owns_material) {
+        ShaderMaterialFactory::destroy(_material);
+    }
+    _material = std::move(material);
+    _owns_material = true;
 }
 
 } // namespace TotoGL
