@@ -11,6 +11,7 @@
 #include <TotoGL/Loaders/WavefrontLoader.hpp>
 #include <TotoGL/Misc/EventListener.hpp>
 #include <TotoGL/Misc/Factory.hpp>
+#include <TotoGL/Primitives/BufferTexture.hpp>
 #include <TotoGL/Primitives/Clock.hpp>
 #include <TotoGL/Primitives/Shader.hpp>
 #include <TotoGL/Primitives/ShaderProgram.hpp>
