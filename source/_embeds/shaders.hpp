@@ -119,7 +119,7 @@ void main() {
     }
 
     vec3 color = emissive;
-    vec3 normal = normalize(u_normal * v_normal);
+    vec3 normal = normalize(v_normal);
     for(int i = 0; i < u_lights_count; i++) {
         color += calculateLight(u_lights[i], ambient, diffuse, specular, normal);
     }
