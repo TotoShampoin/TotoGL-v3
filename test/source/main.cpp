@@ -1,3 +1,5 @@
+#include "TotoGL/Loaders/WavefrontLoader.hpp"
+#include "TotoGL/RenderObject/MaterialObject.hpp"
 #include <TotoGL/TotoGL.hpp>
 #include <fstream>
 
@@ -35,7 +37,6 @@ int main(int /* argc */, const char** /* argv */) {
 
     auto light = TotoGL::LightFactory::create(
         TotoGL::Light({ 1, 1, 1 }, 1, TotoGL::LightType::DIRECTIONAL));
-    light->setDirection({ 1, -1, 1 });
 
     auto plane = TotoGL::RenderObjectFactory::create(
         TotoGL::RenderObject(
@@ -55,26 +56,33 @@ int main(int /* argc */, const char** /* argv */) {
                     TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
                     TotoGL::FragmentShader(std::ifstream("assets/shaders/phong.frag"))))));
 
+    auto kirby_texture = TotoGL::TextureFactory::create(
+        TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
+
+    auto susan = TotoGL::MaterialObjectFactory::create(
+        TotoGL::loadWavefront("assets/models/metal-susan.obj"));
+
     auto override_shader = TotoGL::ShaderMaterialFactory::create(
         TotoGL::ShaderMaterial(
             TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
             TotoGL::FragmentShader(std::ifstream("assets/shaders/depth.frag"))));
-
-    auto kirby_texture = TotoGL::TextureFactory::create(
-        TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
 
     auto render_texture = TotoGL::BufferTextureFactory::create(
         TotoGL::BufferTexture(WIDTH, HEIGHT));
     auto render_texture_2 = TotoGL::BufferTextureFactory::create(
         TotoGL::BufferTexture(WIDTH, HEIGHT));
 
+    light->setDirection({ 0, 0, -1 });
+
     plane->position() = { 0, 0, -2 };
     plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
     plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
+    plane->material().uniform("u_texture", render_texture_2->texture());
 
     kirby->position() = { 2, 0, 0 };
     kirby->material().uniform("u_texture", kirby_texture);
-    plane->material().uniform("u_texture", render_texture_2->texture());
+
+    susan->translate({ -2, 0, 0 });
 
     camera.position() = { 3, 1, 2 };
     camera.lookAt({ 0, 0, 0 });
@@ -82,6 +90,7 @@ int main(int /* argc */, const char** /* argv */) {
     scene->add(sky);
     scene->add(light);
     scene->add(plane);
+    scene->add(susan);
     scene->add(kirby);
 
     window.on(FRAMEBUFFER_SIZE, [&](const TotoGL::VectorEvent& e) {
@@ -94,9 +103,6 @@ int main(int /* argc */, const char** /* argv */) {
 
         control.update(delta_time);
         control.apply(camera);
-
-        kirby->lookAt(camera.position());
-        kirby->rotate(-glm::pi<float>() / 2, camera.transformation().rotationMatrix()[1]);
 
         render_texture->draw([&]() {
             camera.setPersective(fov, static_cast<float>(WIDTH) / HEIGHT, 0.1f, 5.f);

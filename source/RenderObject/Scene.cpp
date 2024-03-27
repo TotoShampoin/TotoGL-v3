@@ -16,6 +16,8 @@ std::vector<SceneComponentReference> Scene::sceneComponents() const {
             scene_components.push_back(Factory<RenderObject>::get(std::get<RenderObjectInstanceId>(id)));
         } else if (std::holds_alternative<SkydomeInstanceId>(id)) {
             scene_components.push_back(Factory<Skydome>::get(std::get<SkydomeInstanceId>(id)));
+        } else if (std::holds_alternative<MaterialObjectInstanceId>(id)) {
+            scene_components.push_back(Factory<MaterialObject>::get(std::get<MaterialObjectInstanceId>(id)));
         }
     }
     return scene_components;

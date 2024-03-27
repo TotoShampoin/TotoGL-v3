@@ -45,6 +45,7 @@ void Renderer::render(
     std::vector<std::reference_wrapper<TotoGL::RenderObject>> objects;
     std::vector<std::reference_wrapper<TotoGL::Light>> lights;
     std::vector<std::reference_wrapper<TotoGL::Skydome>> skydomes;
+    std::vector<std::reference_wrapper<TotoGL::MaterialObject>> material_objects;
     for (auto& component : scene.sceneComponents()) {
         if (std::holds_alternative<std::reference_wrapper<TotoGL::RenderObject>>(component)) {
             objects.push_back(std::get<std::reference_wrapper<TotoGL::RenderObject>>(component));
@@ -52,6 +53,8 @@ void Renderer::render(
             lights.push_back(std::get<std::reference_wrapper<TotoGL::Light>>(component));
         } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Skydome>>(component)) {
             skydomes.push_back(std::get<std::reference_wrapper<TotoGL::Skydome>>(component));
+        } else if (std::holds_alternative<std::reference_wrapper<TotoGL::MaterialObject>>(component)) {
+            material_objects.push_back(std::get<std::reference_wrapper<TotoGL::MaterialObject>>(component));
         }
     }
     clear();
@@ -61,6 +64,13 @@ void Renderer::render(
     }
     for (auto& object : objects) {
         render(object, camera, lights, alternate_material);
+    }
+    for (auto& material_object_ref : material_objects) {
+        auto& material_object = material_object_ref.get();
+        for (size_t i = 0; i < material_object.size(); i++) {
+            auto object = material_object.get(i);
+            render(object, camera, lights, alternate_material);
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include "TotoGL/Misc/Factory.hpp"
 #include "TotoGL/RenderObject/Light.hpp"
+#include "TotoGL/RenderObject/MaterialObject.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/Skydome.hpp"
 #include <functional>
@@ -12,11 +13,13 @@ namespace TotoGL {
 using SceneComponentReference = std::variant<
     std::reference_wrapper<Light>,
     std::reference_wrapper<RenderObject>,
-    std::reference_wrapper<Skydome>>;
+    std::reference_wrapper<Skydome>,
+    std::reference_wrapper<MaterialObject>>;
 using SceneComponentInstanceId = std::variant<
     LightInstanceId,
     RenderObjectInstanceId,
-    SkydomeInstanceId>;
+    SkydomeInstanceId,
+    MaterialObjectInstanceId>;
 
 /**
  * @brief A collection of RenderObjects and Lights. You can just pass it to the Renderer and it will render everything.
