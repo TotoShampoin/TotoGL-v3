@@ -34,7 +34,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL glfw GLU GLEW glm)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_INCLUDE_DIR} ${TOTOGL_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${TOTOGL_VENDOR_DIR}/includes)
 
 
