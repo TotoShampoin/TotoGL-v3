@@ -53,6 +53,7 @@ void Texture::load(std::ifstream&& file) {
         std::istreambuf_iterator<char>(file),
         std::istreambuf_iterator<char>());
     auto cstr = str.c_str();
+    stbi_set_flip_vertically_on_load(true);
     auto data = stbi_load_from_memory(reinterpret_cast<const u_char*>(cstr), str.size(), &_width, &_height, &_color_depth, 0);
 
     int gl_depth;

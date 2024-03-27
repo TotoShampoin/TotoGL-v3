@@ -39,8 +39,12 @@ void Mesh::load(const std::vector<VertexType>& vertices, const std::vector<uint>
 
 void Mesh::draw() {
     bind();
-    glEnable(GL_CULL_FACE);
-    glCullFace(static_cast<GLenum>(_cull_face));
+    if (_cull_face != CullFace::NONE) {
+        glEnable(GL_CULL_FACE);
+        glCullFace(static_cast<GLenum>(_cull_face));
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
     glDrawElements(static_cast<GLenum>(_draw_method), _index_count, GL_UNSIGNED_INT, 0);
     unbind();
 }

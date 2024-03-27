@@ -47,17 +47,20 @@ int main(int /* argc */, const char** /* argv */) {
                     TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
                     TotoGL::FragmentShader(std::ifstream("assets/shaders/shader.frag"))))));
 
-    auto kirby = TotoGL::RenderObjectFactory::create(
-        TotoGL::RenderObject(
-            TotoGL::MeshFactory::create(
-                TotoGL::Mesh::sphere(1, 32, 32)),
-            TotoGL::ShaderMaterialFactory::create(
-                TotoGL::ShaderMaterial(
-                    TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
-                    TotoGL::FragmentShader(std::ifstream("assets/shaders/phong.frag"))))));
+    // auto kirby = TotoGL::RenderObjectFactory::create(
+    //     TotoGL::RenderObject(
+    //         TotoGL::MeshFactory::create(
+    //             TotoGL::Mesh::sphere(1, 32, 32)),
+    //         TotoGL::ShaderMaterialFactory::create(
+    //             TotoGL::ShaderMaterial(
+    //                 TotoGL::VertexShader(std::ifstream("assets/shaders/shader.vert")),
+    //                 TotoGL::FragmentShader(std::ifstream("assets/shaders/phong.frag"))))));
 
-    auto kirby_texture = TotoGL::TextureFactory::create(
-        TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
+    // auto kirby_texture = TotoGL::TextureFactory::create(
+    //     TotoGL::Texture(std::ifstream("assets/textures/kirby.png")));
+
+    auto kirby = TotoGL::MaterialObjectFactory::create(
+        TotoGL::loadWavefront("assets/models/kirby.obj"));
 
     auto susan = TotoGL::MaterialObjectFactory::create(
         TotoGL::loadWavefront("assets/models/metal-susan.obj"));
@@ -76,11 +79,11 @@ int main(int /* argc */, const char** /* argv */) {
 
     plane->position() = { 0, 0, -2 };
     plane->scaling() = { static_cast<float>(WIDTH) / HEIGHT, -1, 1 };
-    plane->mesh().cull_face() = TotoGL::Mesh::CullFace::BACK;
     plane->material().uniform("u_texture", render_texture_2->texture());
 
     kirby->position() = { 2, 0, 0 };
-    kirby->material().uniform("u_texture", kirby_texture);
+    kirby->rotate(glm::radians(-90.f), { 0, 1, 0 });
+    // kirby->material().uniform("u_texture", kirby_texture);
 
     susan->translate({ -2, 0, 0 });
 

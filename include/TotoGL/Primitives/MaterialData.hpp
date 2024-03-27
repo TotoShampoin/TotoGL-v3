@@ -7,10 +7,10 @@
 namespace TotoGL {
 
 struct MaterialData {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    glm::vec3 emissive;
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
+    glm::vec4 emissive;
     float shininess;
     std::optional<TextureInstanceId> ambient_texture;
     std::optional<TextureInstanceId> diffuse_texture;

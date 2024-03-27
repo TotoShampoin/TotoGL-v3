@@ -12,6 +12,7 @@ namespace TotoGL {
 class Mesh {
 public:
     enum class CullFace {
+        NONE = GL_NONE,
         FRONT = GL_FRONT,
         BACK = GL_BACK,
         DOUBLE = GL_FRONT_AND_BACK
@@ -52,7 +53,7 @@ private:
     VaoId _vao;
     size_t _vertex_count, _index_count;
 
-    CullFace _cull_face = CullFace::FRONT;
+    CullFace _cull_face = CullFace::BACK;
     DrawMethod _draw_method = DrawMethod::TRIANGLES;
 
     static constexpr uint VERTEX_ATTR_POSITION = 0;

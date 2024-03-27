@@ -28,15 +28,27 @@ RenderObject MaterialObject::get(const size_t& index) const {
     _shader_material->uniform("u_shininess", material.shininess);
     if (material.ambient_texture) {
         _shader_material->uniform("u_ambient_texture", material.ambient_texture.value());
+        _shader_material->uniform("u_use_ambient_texture", true);
+    } else {
+        _shader_material->uniform("u_use_ambient_texture", false);
     }
     if (material.diffuse_texture) {
         _shader_material->uniform("u_diffuse_texture", material.diffuse_texture.value());
+        _shader_material->uniform("u_use_diffuse_texture", true);
+    } else {
+        _shader_material->uniform("u_use_diffuse_texture", false);
     }
     if (material.specular_texture) {
         _shader_material->uniform("u_specular_texture", material.specular_texture.value());
+        _shader_material->uniform("u_use_specular_texture", true);
+    } else {
+        _shader_material->uniform("u_use_specular_texture", false);
     }
     if (material.emissive_texture) {
         _shader_material->uniform("u_emissive_texture", material.emissive_texture.value());
+        _shader_material->uniform("u_use_emissive_texture", true);
+    } else {
+        _shader_material->uniform("u_use_emissive_texture", false);
     }
     object.transformation() = _transform;
     return object;
