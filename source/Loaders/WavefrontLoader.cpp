@@ -14,6 +14,130 @@
 
 namespace TotoGL {
 
+MaterialObject loadWavefront(const std::filesystem::path& path) {
+    auto totogl_meshes = std::vector<MeshInstanceId>();
+    auto totogl_materials = std::vector<MaterialData>();
+    auto totogl_material_indices = std::vector<uint>();
+
+    auto parent = path.parent_path();
+
+    tinyobj::ObjReaderConfig reader_config;
+    reader_config.mtl_search_path = parent.string();
+    tinyobj::ObjReader reader;
+
+    if (!reader.ParseFromFile(path.string(), reader_config)) {
+        if (!reader.Error().empty()) {
+            throw std::runtime_error(reader.Error());
+        }
+        throw std::runtime_error("Failed to parse the file");
+    }
+
+    if (!reader.Warning().empty()) {
+        throw std::runtime_error(reader.Warning());
+    }
+
+    auto& attrib = reader.GetAttrib();
+    auto& shapes = reader.GetShapes();
+    auto& materials = reader.GetMaterials();
+
+    for (const auto& shape : shapes) {
+        std::vector<VertexType> vertices;
+        std::vector<uint> indices;
+
+        size_t index_offset = 0;
+        size_t submesh_index = 0;
+        // for (const auto& face_nb_verts : shape.mesh.num_face_vertices) {
+        size_t last_material_index;
+        for (size_t i = 0; i < shape.mesh.num_face_vertices.size(); i++) {
+            const auto face_nb_verts = shape.mesh.num_face_vertices[i];
+            if (face_nb_verts != 3) {
+                throw std::runtime_error("Only triangles are supported, please triangulate your mesh");
+            }
+            if (i > 0) {
+                if (shape.mesh.material_ids[i] != last_material_index) {
+                    auto mesh = MeshFactory::create(Mesh(vertices, indices));
+                    auto material_index = shape.mesh.material_ids[i - 1];
+                    totogl_meshes.push_back(mesh);
+                    totogl_material_indices.push_back(material_index);
+                    vertices.clear();
+                    indices.clear();
+                    submesh_index = 0;
+                }
+            }
+            for (int v = 0; v < face_nb_verts; v++) {
+                const auto& tiny_index = shape.mesh.indices[index_offset + v];
+                glm::vec3 vertex;
+                glm::vec3 normal;
+                glm::vec2 uv;
+                vertex = {
+                    attrib.vertices[3 * tiny_index.vertex_index + 0],
+                    attrib.vertices[3 * tiny_index.vertex_index + 1],
+                    attrib.vertices[3 * tiny_index.vertex_index + 2]
+                };
+                if (tiny_index.normal_index >= 0) {
+                    normal = {
+                        attrib.normals[3 * tiny_index.normal_index + 0],
+                        attrib.normals[3 * tiny_index.normal_index + 1],
+                        attrib.normals[3 * tiny_index.normal_index + 2]
+                    };
+                }
+                if (tiny_index.texcoord_index >= 0) {
+                    uv = {
+                        attrib.texcoords[2 * tiny_index.texcoord_index + 0],
+                        attrib.texcoords[2 * tiny_index.texcoord_index + 1]
+                    };
+                }
+                vertices.push_back({ vertex, normal, uv });
+            }
+            indices.push_back(submesh_index + 2);
+            indices.push_back(submesh_index + 1);
+            indices.push_back(submesh_index + 0);
+            index_offset += face_nb_verts;
+            submesh_index += face_nb_verts;
+            last_material_index = shape.mesh.material_ids[i];
+        }
+        auto mesh = MeshFactory::create(Mesh(vertices, indices));
+        auto material_index = shape.mesh.material_ids.back();
+        totogl_meshes.push_back(mesh);
+        totogl_material_indices.push_back(material_index);
+    }
+
+    for (const auto& t_material : materials) {
+        MaterialData material;
+        material.ambient = glm::vec3(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2]);
+        material.diffuse = glm::vec3(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2]);
+        material.specular = glm::vec3(t_material.specular[0], t_material.specular[1], t_material.specular[2]);
+        material.emissive = glm::vec3(t_material.emission[0], t_material.emission[1], t_material.emission[2]);
+        material.shininess = t_material.shininess;
+        if (!t_material.ambient_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.ambient_texname));
+            material.ambient_texture = texture;
+        }
+        if (!t_material.diffuse_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.diffuse_texname));
+            material.diffuse_texture = texture;
+        }
+        if (!t_material.specular_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.specular_texname));
+            material.specular_texture = texture;
+        }
+        if (!t_material.emissive_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.emissive_texname));
+            material.emissive_texture = texture;
+        }
+        totogl_materials.push_back(material);
+    }
+
+    auto loaded_object = MaterialObject(
+        std::move(totogl_meshes),
+        std::move(totogl_materials),
+        std::move(totogl_material_indices));
+
+    return loaded_object;
+}
+
+//
+
 Mesh loadWavefrontObj(std::ifstream&& file) {
     struct VertexData {
         std::vector<glm::vec3> vertices;
@@ -68,114 +192,6 @@ Mesh loadWavefrontObj(std::ifstream&& file) {
     }
 
     return Mesh { vertices, indices };
-}
-
-MaterialObject loadWavefront(const std::filesystem::path& path) {
-    auto totogl_meshes = std::vector<MeshInstanceId>();
-    auto totogl_materials = std::vector<MaterialData>();
-    auto totogl_material_indices = std::vector<uint>();
-
-    auto parent = path.parent_path();
-
-    tinyobj::ObjReaderConfig reader_config;
-    reader_config.mtl_search_path = parent.string();
-    tinyobj::ObjReader reader;
-
-    if (!reader.ParseFromFile(path.string(), reader_config)) {
-        if (!reader.Error().empty()) {
-            throw std::runtime_error(reader.Error());
-        }
-        throw std::runtime_error("Failed to parse the file");
-    }
-
-    if (!reader.Warning().empty()) {
-        throw std::runtime_error(reader.Warning());
-    }
-
-    auto& attrib = reader.GetAttrib();
-    auto& shapes = reader.GetShapes();
-    auto& materials = reader.GetMaterials();
-
-    // TURNS OUT THIS IS NOT HOW I PLANNED IT
-    // Apparently, a shape is defined by the mesh itself, and not by its triangles' materials
-    // TODO(Loader) Make sure each triangle has its own material
-    for (const auto& shape : shapes) {
-        std::vector<VertexType> vertices;
-        std::vector<uint> indices;
-
-        size_t index_offset = 0;
-        for (const auto& face_nb_verts : shape.mesh.num_face_vertices) {
-            if (face_nb_verts != 3) {
-                throw std::runtime_error("Only triangles are supported, please triangulate your mesh");
-            }
-            for (int v = 0; v < face_nb_verts; v++) {
-                const auto& tiny_index = shape.mesh.indices[index_offset + v];
-                glm::vec3 vertex;
-                glm::vec3 normal;
-                glm::vec2 uv;
-                vertex = {
-                    attrib.vertices[3 * tiny_index.vertex_index + 0],
-                    attrib.vertices[3 * tiny_index.vertex_index + 1],
-                    attrib.vertices[3 * tiny_index.vertex_index + 2]
-                };
-                if (tiny_index.normal_index >= 0) {
-                    normal = {
-                        attrib.normals[3 * tiny_index.normal_index + 0],
-                        attrib.normals[3 * tiny_index.normal_index + 1],
-                        attrib.normals[3 * tiny_index.normal_index + 2]
-                    };
-                }
-                if (tiny_index.texcoord_index >= 0) {
-                    uv = {
-                        attrib.texcoords[2 * tiny_index.texcoord_index + 0],
-                        attrib.texcoords[2 * tiny_index.texcoord_index + 1]
-                    };
-                }
-                vertices.push_back({ vertex, normal, uv });
-            }
-            indices.push_back(index_offset + 2);
-            indices.push_back(index_offset + 1);
-            indices.push_back(index_offset + 0);
-            index_offset += face_nb_verts;
-        }
-        auto mesh = MeshFactory::create(Mesh(vertices, indices));
-        auto material_index = shape.mesh.material_ids[0];
-        totogl_meshes.push_back(mesh);
-        totogl_material_indices.push_back(material_index);
-    }
-
-    for (const auto& t_material : materials) {
-        MaterialData material;
-        material.ambient = glm::vec3(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2]);
-        material.diffuse = glm::vec3(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2]);
-        material.specular = glm::vec3(t_material.specular[0], t_material.specular[1], t_material.specular[2]);
-        material.emissive = glm::vec3(t_material.emission[0], t_material.emission[1], t_material.emission[2]);
-        material.shininess = t_material.shininess;
-        if (!t_material.ambient_texname.empty()) {
-            auto texture = TextureFactory::create(Texture(parent / t_material.ambient_texname));
-            material.ambient_texture = texture;
-        }
-        if (!t_material.diffuse_texname.empty()) {
-            auto texture = TextureFactory::create(Texture(parent / t_material.diffuse_texname));
-            material.diffuse_texture = texture;
-        }
-        if (!t_material.specular_texname.empty()) {
-            auto texture = TextureFactory::create(Texture(parent / t_material.specular_texname));
-            material.specular_texture = texture;
-        }
-        if (!t_material.emissive_texname.empty()) {
-            auto texture = TextureFactory::create(Texture(parent / t_material.emissive_texname));
-            material.emissive_texture = texture;
-        }
-        totogl_materials.push_back(material);
-    }
-
-    auto loaded_object = MaterialObject(
-        std::move(totogl_meshes),
-        std::move(totogl_materials),
-        std::move(totogl_material_indices));
-
-    return loaded_object;
 }
 
 } // namespace TotoGL
