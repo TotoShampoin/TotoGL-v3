@@ -39,7 +39,6 @@ void Renderer::clear(bool color, bool depth, bool stencil) {
     glEnable(GL_DEPTH_TEST);
 }
 
-//  This will come automatically, when we'll implement object loading
 void Renderer::render(
     TotoGL::Scene& scene, TotoGL::Camera& camera,
     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> alternate_material) {
