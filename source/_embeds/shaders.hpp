@@ -51,10 +51,10 @@ uniform mat4 u_projection;
 uniform mat4 u_modelview;
 uniform mat3 u_normal;
 
-uniform vec3 u_amibent;
-uniform vec3 u_diffuse;
-uniform vec3 u_specular;
-uniform vec3 u_emissive;
+uniform vec4 u_amibent;
+uniform vec4 u_diffuse;
+uniform vec4 u_specular;
+uniform vec4 u_emissive;
 uniform float u_shininess;
 
 uniform sampler2D u_ambient_texture;
@@ -70,9 +70,10 @@ uniform bool u_use_emissive_texture;
 uniform int u_lights_count;
 uniform Ligth u_lights[LIGHT_MAX];
 
+// https://en.wikipedia.org/wiki/Blinn%E2%80%93Phong_reflection_model 
 vec3 blinnPhong(vec3 w_i, vec3 l_i, vec3 n, vec3 k_d, vec3 k_s, float shininess) {
-    vec3 w_o = vec3(0, 0, 1);
-    vec3 half_vector = (w_o + w_i) / 2;
+    vec3 w_o = normalize(-v_position);
+    vec3 half_vector = normalize(w_o + w_i);
     
     vec3 result_diffuse = k_d * max(dot(w_i, n), 0);
     vec3 result_specular = k_s * pow(max(dot(half_vector, n), 0), shininess);
@@ -95,35 +96,36 @@ vec3 calculateLight(Ligth light, vec3 ambient, vec3 diffuse, vec3 specular, vec3
 }
 
 void main() {
-    vec3 ambient = u_amibent;
-    vec3 diffuse = u_diffuse;
-    vec3 specular = u_specular;
-    vec3 emissive = u_emissive;
+    vec4 ambient = u_amibent;
+    vec4 diffuse = u_diffuse;
+    vec4 specular = u_specular;
+    vec4 emissive = u_emissive;
     float shininess = u_shininess;
 
     if (u_use_ambient_texture) {
-        vec3 tex = texture(u_ambient_texture, v_uv).rgb;
-        ambient *= tex;
+        vec4 tex = texture(u_ambient_texture, v_uv).rgba;
+        ambient *= tex * tex.a;
     }
     if (u_use_diffuse_texture) {
-        vec3 tex = texture(u_diffuse_texture, v_uv).rgb;
-        diffuse *= tex;
+        vec4 tex = texture(u_diffuse_texture, v_uv).rgba;
+        diffuse *= tex * tex.a;
     }
     if (u_use_specular_texture) {
-        vec3 tex = texture(u_specular_texture, v_uv).rgb;
-        specular *= tex;
+        vec4 tex = texture(u_specular_texture, v_uv).rgba;
+        specular *= tex * tex.a;
     }
     if (u_use_emissive_texture) {
-        vec3 tex = texture(u_emissive_texture, v_uv).rgb;
-        emissive *= tex;
+        vec4 tex = texture(u_emissive_texture, v_uv).rgba;
+        emissive *= tex * tex.a;
     }
 
-    vec3 color = emissive;
+    vec3 color = emissive.rgb;
+    float alpha = max(max(diffuse.a, specular.a), max(ambient.a, emissive.a));
     vec3 normal = normalize(v_normal);
     for(int i = 0; i < u_lights_count; i++) {
-        color += calculateLight(u_lights[i], ambient, diffuse, specular, normal);
+        color += calculateLight(u_lights[i], ambient.rgb, diffuse.rgb, specular.rgb, normal);
     }
 
-    f_frag_color = vec4(color, 1.0);
+    f_frag_color = vec4(color, alpha);
 }
 )glsl";
