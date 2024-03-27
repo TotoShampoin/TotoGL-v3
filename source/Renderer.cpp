@@ -8,7 +8,6 @@
 
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/RenderObject/Light.hpp"
-#include "TotoGL/RenderObject/RenderGroup.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
 #include "TotoGL/RenderObject/Scene.hpp"
 #include "TotoGL/RenderObject/Skydome.hpp"
@@ -40,13 +39,11 @@ void Renderer::clear(bool color, bool depth, bool stencil) {
     glEnable(GL_DEPTH_TEST);
 }
 
-// TODO(Rendering): Test RenderGroup
 //  This will come automatically, when we'll implement object loading
 void Renderer::render(
     TotoGL::Scene& scene, TotoGL::Camera& camera,
     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> alternate_material) {
     std::vector<std::reference_wrapper<TotoGL::RenderObject>> objects;
-    std::vector<std::reference_wrapper<TotoGL::RenderGroup>> groups;
     std::vector<std::reference_wrapper<TotoGL::Light>> lights;
     std::vector<std::reference_wrapper<TotoGL::Skydome>> skydomes;
     for (auto& component : scene.sceneComponents()) {
@@ -54,8 +51,6 @@ void Renderer::render(
             objects.push_back(std::get<std::reference_wrapper<TotoGL::RenderObject>>(component));
         } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Light>>(component)) {
             lights.push_back(std::get<std::reference_wrapper<TotoGL::Light>>(component));
-        } else if (std::holds_alternative<std::reference_wrapper<TotoGL::RenderGroup>>(component)) {
-            groups.push_back(std::get<std::reference_wrapper<TotoGL::RenderGroup>>(component));
         } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Skydome>>(component)) {
             skydomes.push_back(std::get<std::reference_wrapper<TotoGL::Skydome>>(component));
         }
@@ -64,13 +59,6 @@ void Renderer::render(
     if (!alternate_material.has_value() && !skydomes.empty()) {
         render(skydomes[0].get().object(), camera);
         clear(false, true, false);
-    }
-    for (auto& group : groups) {
-        auto& transform = group.get().transformation();
-        for (auto& object : group.get().objects()) {
-            object->transformation() = transform;
-            render(*object, camera, lights, alternate_material);
-        }
     }
     for (auto& object : objects) {
         render(object, camera, lights, alternate_material);
