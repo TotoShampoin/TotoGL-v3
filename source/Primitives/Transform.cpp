@@ -49,6 +49,14 @@ Transform& Transform::scale(const glm::vec3& factor) {
 }
 
 Transform& Transform::lookAt(const glm::vec3& target, const glm::vec3& up) {
+    auto normalized_target = glm::normalize(target);
+    auto normalized_up = glm::normalize(up);
+    if (glm::dot(normalized_target, normalized_up) == 1 || glm::dot(normalized_target, normalized_up) == -1) {
+        if (glm::dot(normalized_up, { 1, 0, 0 }) != 1)
+            return lookAt(target, { up.x + 1, up.y, up.z });
+        else
+            return lookAt(target, { up.x, up.y + 1, up.z });
+    }
     auto direction = glm::inverse(glm::lookAt(_translation, target, up));
     glm::extractEulerAngleXYZ(direction, _rotation.x, _rotation.y, _rotation.z);
     return *this;
