@@ -17,6 +17,16 @@ public:
         std::vector<MaterialData>&& materials,
         std::vector<uint>&& material_indices);
 
+    MaterialObject(
+        const std::vector<MeshInstanceId>& meshes,
+        const std::vector<MaterialData>& materials,
+        const std::vector<uint>& material_indices);
+
+    MaterialObject(MaterialObject&& other);
+    ~MaterialObject();
+
+    ObjectInstanceId<MaterialObject> clone() const;
+
     RenderObject get(const size_t& index) const;
     size_t size() const { return _meshes.size(); }
 
@@ -41,7 +51,10 @@ private:
     std::vector<MaterialData> _materials;
     std::vector<uint> _material_indices;
     ShaderMaterialInstanceId _shader_material;
+    bool _owns_meshes;
     Transform _transform;
+
+    void initShaderMaterial();
 };
 
 using MaterialObjectFactory = Factory<MaterialObject>;

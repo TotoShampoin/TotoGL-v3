@@ -10,12 +10,51 @@ MaterialObject::MaterialObject(
     std::vector<uint>&& material_indices)
     : _meshes(std::move(meshes))
     , _materials(std::move(materials))
-    , _material_indices(std::move(material_indices)) {
+    , _material_indices(std::move(material_indices))
+    , _owns_meshes(true) {
+    initShaderMaterial();
+}
+
+MaterialObject::MaterialObject(
+    const std::vector<MeshInstanceId>& meshes,
+    const std::vector<MaterialData>& materials,
+    const std::vector<uint>& material_indices)
+    : _meshes(meshes)
+    , _materials(materials)
+    , _material_indices(material_indices)
+    , _owns_meshes(false) {
+    initShaderMaterial();
+}
+
+MaterialObject::MaterialObject(MaterialObject&& other)
+    : _meshes(std::move(other._meshes))
+    , _materials(std::move(other._materials))
+    , _material_indices(std::move(other._material_indices))
+    , _shader_material(other._shader_material)
+    , _owns_meshes(other._owns_meshes)
+    , _transform(other._transform) {
+    other._owns_meshes = false;
+}
+
+MaterialObject::~MaterialObject() {
+    if (_owns_meshes) {
+        for (auto& mesh : _meshes) {
+            MeshFactory::destroy(mesh);
+        }
+    }
+}
+
+void MaterialObject::initShaderMaterial() {
     static auto PHONG_SHADER = ShaderMaterialFactory::create(ShaderMaterial(
         VertexShader(vertex_shader),
         FragmentShader(prong_shader)));
 
     _shader_material = PHONG_SHADER;
+}
+
+MaterialObjectInstanceId MaterialObject::clone() const {
+    return MaterialObjectFactory::create(
+        MaterialObject(_meshes, _materials, _material_indices));
 }
 
 RenderObject MaterialObject::get(const size_t& index) const {
