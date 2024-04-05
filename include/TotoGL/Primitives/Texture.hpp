@@ -18,8 +18,12 @@ public:
     void bind();
     static void unbind();
 
-protected:
+    // protected:
     GLuint id() { return _texture.id(); }
+
+    int width() const { return _width; }
+    int height() const { return _height; }
+    int colorDepth() const { return _color_depth; }
 
 private:
     TextureId _texture;
