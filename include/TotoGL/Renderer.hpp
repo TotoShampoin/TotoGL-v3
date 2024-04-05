@@ -25,9 +25,22 @@ public:
         TotoGL::Scene&, TotoGL::Camera&,
         std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> = std::nullopt);
 
+    // void render(
+    //     TotoGL::RenderObject&, TotoGL::Camera&,
+    //     std::optional<std::vector<std::reference_wrapper<TotoGL::Light>>> = std::nullopt,
+    //     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> = std::nullopt);
     void render(
         TotoGL::RenderObject&, TotoGL::Camera&,
-        std::optional<std::vector<std::reference_wrapper<TotoGL::Light>>> = std::nullopt,
+        std::optional<std::vector<TotoGL::LightInstanceId>> = std::nullopt,
+        std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> = std::nullopt);
+
+    // void render(
+    //     TotoGL::MaterialObject&, TotoGL::Camera&,
+    //     std::optional<std::vector<std::reference_wrapper<TotoGL::Light>>> = std::nullopt,
+    //     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> = std::nullopt);
+    void render(
+        TotoGL::MaterialObject&, TotoGL::Camera&,
+        std::optional<std::vector<TotoGL::LightInstanceId>> = std::nullopt,
         std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> = std::nullopt);
 
 private:
@@ -35,7 +48,8 @@ private:
 
     void draw(TotoGL::Mesh& mesh, TotoGL::ShaderMaterial& material);
     void applyCamera(TotoGL::Camera& camera, TotoGL::Mesh& mesh, TotoGL::ShaderMaterial& material, TotoGL::Transform& transform);
-    void applyLights(std::vector<std::reference_wrapper<TotoGL::Light>>& lights, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera);
+    // void applyLights(std::vector<std::reference_wrapper<TotoGL::Light>>& lights, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera);
+    void applyLights(std::vector<TotoGL::LightInstanceId>& lights, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera);
     void applyLight(TotoGL::Light& light, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera, size_t index = 0);
 };
 
