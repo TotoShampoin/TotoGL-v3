@@ -43,7 +43,7 @@ struct InputEvent {
 
 class Window {
 public:
-    Window(const int& width, const int& height, const std::basic_string<char>& title);
+    Window(const int& width, const int& height, const std::basic_string<char>& title, const bool& fullscreen = false);
     Window(const Window&) = delete;
     ~Window();
 

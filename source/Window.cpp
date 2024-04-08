@@ -1,12 +1,13 @@
 #include "TotoGL/Window.hpp"
 
+#include <GLFW/glfw3.h>
 #include <stdexcept>
 
 namespace TotoGL {
 
-Window::Window(const int& width, const int& height, const std::basic_string<char>& title) {
+Window::Window(const int& width, const int& height, const std::basic_string<char>& title, const bool& fullscreen) {
     init();
-    _glfw_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    _glfw_window = glfwCreateWindow(width, height, title.c_str(), fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
     if (!_glfw_window) {
         const char* error;
         glfwGetError(&error);
