@@ -51,7 +51,7 @@ uniform mat4 u_projection;
 uniform mat4 u_modelview;
 uniform mat3 u_normal;
 
-uniform vec4 u_amibent;
+uniform vec4 u_ambient;
 uniform vec4 u_diffuse;
 uniform vec4 u_specular;
 uniform vec4 u_emissive;
@@ -96,7 +96,7 @@ vec3 calculateLight(Ligth light, vec3 ambient, vec3 diffuse, vec3 specular, vec3
 }
 
 void main() {
-    vec4 ambient = u_amibent;
+    vec4 ambient = u_ambient;
     vec4 diffuse = u_diffuse;
     vec4 specular = u_specular;
     vec4 emissive = u_emissive;
