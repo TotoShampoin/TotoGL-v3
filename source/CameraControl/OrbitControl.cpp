@@ -12,11 +12,6 @@ OrbitControl::OrbitControl(float angle_x, float angle_y, float distance)
     , _distance(distance) { }
 
 void OrbitControl::apply(Camera& camera) {
-    // camera.position() = _position + //
-    //     glm::vec3(
-    //         -glm::cos(_alpha) * glm::cos(_beta) * _distance,
-    //         -glm::sin(_alpha) * _distance,
-    //         glm::cos(_alpha) * glm::sin(_beta) * _distance);
     camera.position() = _position - front() * _distance;
     camera.lookAt(_position, { 0, 1, 0 });
 }
