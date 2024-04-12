@@ -13,7 +13,7 @@ public:
 
     void rotate(float x, float y);
 
-    void bindEvents(Window& window, std::function<bool()> focus_stolen = empty_function, const bool& steal_cursor = false);
+    void bindEvents(Window& window, std::function<bool()> focus_stolen = empty_function, bool steal_cursor = false);
 
     glm::vec3 front(const bool& grounded = false);
     glm::vec3 right(const bool& grounded = false);

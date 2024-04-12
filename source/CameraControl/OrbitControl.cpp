@@ -28,7 +28,8 @@ void OrbitControl::rotate(float x, float y) {
         _beta = -HALF_PI + EPSILON;
 }
 
-void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen, const bool& steal_focus) {
+void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen, bool steal_cursor) {
+    using InputEventName::KEY;
     using InputEventName::MOUSE_BUTTON;
     using VectorEventName::CURSOR_POSITION;
     using VectorEventName::SCROLL;
@@ -36,9 +37,16 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
 
     static bool is_holding;
 
-    window.on(MOUSE_BUTTON, [&, focus_stolen](const InputEvent& event) {
+    window.on(MOUSE_BUTTON, [&, focus_stolen, steal_cursor](const InputEvent& event) {
         if (event.button == GLFW_MOUSE_BUTTON_1) {
-            is_holding = bool(event.action);
+            if (!steal_cursor) {
+                is_holding = bool(event.action);
+                return;
+            }
+            if (event.action == GLFW_PRESS && !focus_stolen()) {
+                glfwSetInputMode(window.glfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                is_holding = true;
+            }
         }
     });
     window.on(CURSOR_POSITION, [&, focus_stolen](const VectorEvent& event) {
@@ -57,6 +65,17 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
         _distance *= glm::pow(1.25, -event.dy);
         if (_distance < glm::epsilon<float>())
             _distance = glm::epsilon<float>();
+    });
+    window.on(KEY, [&, focus_stolen, steal_cursor](const InputEvent& event) {
+        if (focus_stolen()) {
+            return;
+        }
+        if (event.action == GLFW_PRESS && event.button == GLFW_KEY_ESCAPE) {
+            if (steal_cursor) {
+                glfwSetInputMode(window.glfwWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+            is_holding = false;
+        }
     });
 }
 
