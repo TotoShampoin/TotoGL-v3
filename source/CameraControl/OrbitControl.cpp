@@ -39,7 +39,7 @@ void OrbitControl::bindEvents(Window& window, std::function<bool()> focus_stolen
 
     window.on(MOUSE_BUTTON, [&, focus_stolen, steal_cursor](const InputEvent& event) {
         if (event.button == GLFW_MOUSE_BUTTON_1) {
-            if (!steal_cursor) {
+            if (!steal_cursor && !focus_stolen()) {
                 is_holding = bool(event.action);
                 return;
             }
