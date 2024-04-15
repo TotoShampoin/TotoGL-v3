@@ -1,4 +1,5 @@
 #include "TotoGL/Loaders/WavefrontLoader.hpp"
+#include "TotoGL/Primitives/Color.hpp"
 #include "TotoGL/Primitives/MaterialData.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
 #include "TotoGL/Primitives/Vertex.hpp"
@@ -109,37 +110,37 @@ MaterialObject loadWavefront(const std::filesystem::path& path) {
 
     for (const auto& t_material : materials) {
         MaterialData material;
-        material.ambient = glm::vec4(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2], 1);
-        material.diffuse = glm::vec4(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2], 1);
-        material.specular = glm::vec4(t_material.specular[0], t_material.specular[1], t_material.specular[2], 1);
-        material.emissive = glm::vec4(t_material.emission[0], t_material.emission[1], t_material.emission[2], 1);
+        material.ambient = ColorRGBA(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2], 1);
+        material.diffuse = ColorRGBA(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2], 1);
+        material.specular = ColorRGBA(t_material.specular[0], t_material.specular[1], t_material.specular[2], 1);
+        material.emissive = ColorRGBA(t_material.emission[0], t_material.emission[1], t_material.emission[2], 1);
         material.shininess = t_material.shininess;
         if (!t_material.ambient_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.ambient_texname));
             material.ambient_texture = texture;
-            if (material.ambient == glm::vec4(0, 0, 0, 1)) {
-                material.ambient = glm::vec4(1);
+            if (material.ambient == ColorRGBA(0, 0, 0, 1)) {
+                material.ambient = ColorRGBA(1);
             }
         }
         if (!t_material.diffuse_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.diffuse_texname));
             material.diffuse_texture = texture;
-            if (material.diffuse == glm::vec4(0, 0, 0, 1)) {
-                material.diffuse = glm::vec4(1);
+            if (material.diffuse == ColorRGBA(0, 0, 0, 1)) {
+                material.diffuse = ColorRGBA(1);
             }
         }
         if (!t_material.specular_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.specular_texname));
             material.specular_texture = texture;
-            if (material.specular == glm::vec4(0, 0, 0, 1)) {
-                material.specular = glm::vec4(1);
+            if (material.specular == ColorRGBA(0, 0, 0, 1)) {
+                material.specular = ColorRGBA(1);
             }
         }
         if (!t_material.emissive_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.emissive_texname));
             material.emissive_texture = texture;
-            if (material.emissive == glm::vec4(0, 0, 0, 1)) {
-                material.emissive = glm::vec4(1);
+            if (material.emissive == ColorRGBA(0, 0, 0, 1)) {
+                material.emissive = ColorRGBA(1);
             }
         }
         totogl_materials.push_back(material);

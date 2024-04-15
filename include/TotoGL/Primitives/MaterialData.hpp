@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TotoGL/Primitives/Color.hpp"
 #include "TotoGL/Primitives/Texture.hpp"
 #include <glm/glm.hpp>
 #include <optional>
@@ -7,10 +8,10 @@
 namespace TotoGL {
 
 struct MaterialData {
-    glm::vec4 ambient;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
-    glm::vec4 emissive;
+    ColorRGBA ambient;
+    ColorRGBA diffuse;
+    ColorRGBA specular;
+    ColorRGBA emissive;
     float shininess;
     std::optional<TextureInstanceId> ambient_texture;
     std::optional<TextureInstanceId> diffuse_texture;

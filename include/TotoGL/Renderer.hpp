@@ -7,6 +7,7 @@
 #include "RenderObject/Light.hpp"
 #include "RenderObject/RenderObject.hpp"
 #include "RenderObject/Scene.hpp"
+#include "TotoGL/Primitives/Color.hpp"
 #include "TotoGL/RenderObject/Mesh.hpp"
 #include "TotoGL/RenderObject/ShaderMaterial.hpp"
 
@@ -18,7 +19,7 @@ public:
     Renderer(const Renderer&) = delete;
     ~Renderer() = default;
 
-    void clearColor(const glm::vec4& color);
+    void clearColor(const ColorRGBA& color);
     void clear(bool color = true, bool depth = true, bool stencil = true);
 
     void render(

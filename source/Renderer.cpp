@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include "TotoGL/Primitives/Color.hpp"
 #include "TotoGL/RenderObject/Camera.hpp"
 #include "TotoGL/RenderObject/Light.hpp"
 #include "TotoGL/RenderObject/RenderObject.hpp"
@@ -27,7 +28,7 @@ void Renderer::init() {
     }
 }
 
-void Renderer::clearColor(const glm::vec4& color) {
+void Renderer::clearColor(const ColorRGBA& color) {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
