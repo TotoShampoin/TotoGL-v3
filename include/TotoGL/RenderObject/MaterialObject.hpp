@@ -30,6 +30,10 @@ public:
     RenderObject get(const size_t& index) const;
     size_t size() const { return _meshes.size(); }
 
+    std::vector<MeshInstanceId>& meshes() { return _meshes; }
+    std::vector<MaterialData>& materials() { return _materials; }
+    std::vector<uint>& materialIndices() { return _material_indices; }
+
     const std::vector<MeshInstanceId>& meshes() const { return _meshes; }
     const std::vector<MaterialData>& materials() const { return _materials; }
     const std::vector<uint>& materialIndices() const { return _material_indices; }
