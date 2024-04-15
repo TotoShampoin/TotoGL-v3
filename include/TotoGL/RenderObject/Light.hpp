@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TotoGL/Misc/Factory.hpp"
+#include "TotoGL/Primitives/Color.hpp"
 #include "TotoGL/Primitives/Transform.hpp"
 #include <glm/glm.hpp>
 
@@ -15,14 +16,14 @@ enum class LightType {
 class Light {
 public:
     Light() = delete;
-    Light(glm::vec3 color, float strength, LightType type);
+    Light(ColorRGB color, float strength, LightType type);
     ~Light() = default;
 
     Light& translate(const glm::vec3& translation);
     Light& rotate(const float& angle, const glm::vec3& axis);
 
     LightType& type() { return _type; }
-    glm::vec3& color() { return _color; }
+    ColorRGB& color() { return _color; }
     float& strength() { return _strength; }
 
     Transform& transformation() { return _transform; }
@@ -33,7 +34,7 @@ public:
 private:
     Transform _transform;
     LightType _type;
-    glm::vec3 _color;
+    ColorRGB _color;
     float _strength;
 };
 

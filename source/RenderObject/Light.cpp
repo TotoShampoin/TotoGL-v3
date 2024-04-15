@@ -5,7 +5,7 @@
 
 namespace TotoGL {
 
-Light::Light(glm::vec3 color, float strength, LightType type)
+Light::Light(ColorRGB color, float strength, LightType type)
     : _type(type)
     , _color(color)
     , _strength(strength) { }
