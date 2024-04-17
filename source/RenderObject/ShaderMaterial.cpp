@@ -35,7 +35,7 @@ void ShaderMaterial::uniform(const std::string& name, const UniformVariant& valu
 }
 
 void ShaderMaterial::uniform(const std::string& name, TextureInstanceId value) {
-    _program.uniform(name, TextureFactory::get(value));
+    uniform(name, TextureFactory::get(value));
 }
 void ShaderMaterial::uniform(const std::string& name, Texture& value) {
     use();

@@ -77,6 +77,8 @@ public:
     void uniform(const std::string& name, Texture& value) {
         if (!_textures.contains(name)) {
             _textures.insert_or_assign(name, value);
+        } else {
+            _textures.at(name) = value;
         }
         int map_index = std::distance(_textures.begin(), _textures.find(name));
         uniform(name, map_index);
