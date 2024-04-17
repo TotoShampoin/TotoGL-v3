@@ -17,6 +17,7 @@ struct MaterialData {
     std::optional<TextureInstanceId> diffuse_texture;
     std::optional<TextureInstanceId> specular_texture;
     std::optional<TextureInstanceId> emissive_texture;
+    std::optional<TextureInstanceId> shininess_texture;
     std::optional<TextureInstanceId> alpha_texture;
 };
 

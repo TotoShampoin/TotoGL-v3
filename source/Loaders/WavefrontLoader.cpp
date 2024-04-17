@@ -143,6 +143,13 @@ MaterialObject loadWavefront(const std::filesystem::path& path) {
                 material.emissive = ColorRGB(1);
             }
         }
+        if (!t_material.specular_highlight_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.specular_highlight_texname));
+            material.shininess_texture = texture;
+            if (material.shininess == 1.f) {
+                material.shininess = 1000.f;
+            }
+        }
         if (!t_material.alpha_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.alpha_texname));
             material.alpha_texture = texture;

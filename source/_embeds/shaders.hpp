@@ -61,12 +61,14 @@ uniform sampler2D u_ambient_texture;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_specular_texture;
 uniform sampler2D u_emissive_texture;
+uniform sampler2D u_shininess_texture;
 uniform sampler2D u_alpha_texture;
 
 uniform bool u_use_ambient_texture;
 uniform bool u_use_diffuse_texture;
 uniform bool u_use_specular_texture;
 uniform bool u_use_emissive_texture;
+uniform bool u_use_shininess_texture;
 uniform bool u_use_alpha_texture;
 
 uniform int u_lights_count;
@@ -116,6 +118,9 @@ void main() {
     }
     if (u_use_emissive_texture) {
         emissive *= texture(u_emissive_texture, v_uv).rgb;
+    }
+    if (u_use_shininess_texture) {
+        shininess *= texture(u_shininess_texture, v_uv).r;
     }
     if (u_use_alpha_texture) {
         alpha *= texture(u_alpha_texture, v_uv).a;
