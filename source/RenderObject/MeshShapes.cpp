@@ -48,12 +48,12 @@ Mesh Mesh::cube(float width, float height, float depth) {
         { { -width / 2.f, -height / 2.f, depth / 2.f }, { 0, -1, 0 }, { 1, 1 } },
     };
     static std::vector<uint> triangles = {
-        0, 1, 2, 0, 2, 3, // front
-        4, 6, 5, 4, 7, 6, // back
-        8, 9, 10, 8, 10, 11, // left
-        12, 14, 13, 12, 15, 14, // right
-        16, 17, 18, 16, 18, 19, // top
-        20, 22, 21, 20, 23, 22, // bottom
+        2, 1, 0, 3, 2, 0, // front
+        5, 6, 4, 6, 7, 4, // back
+        10, 9, 8, 11, 10, 8, // left
+        13, 14, 12, 14, 15, 12, // right
+        18, 17, 16, 19, 18, 16, // top
+        21, 22, 20, 22, 23, 20, // bottom
     };
     return Mesh(vertices, triangles);
 }
