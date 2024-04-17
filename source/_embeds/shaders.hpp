@@ -51,21 +51,23 @@ uniform mat4 u_projection;
 uniform mat4 u_modelview;
 uniform mat3 u_normal;
 
-uniform vec4 u_ambient;
-uniform vec4 u_diffuse;
-uniform vec4 u_specular;
-uniform vec4 u_emissive;
+uniform vec3 u_ambient;
+uniform vec3 u_diffuse;
+uniform vec3 u_specular;
+uniform vec3 u_emissive;
 uniform float u_shininess;
 
 uniform sampler2D u_ambient_texture;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_specular_texture;
 uniform sampler2D u_emissive_texture;
+uniform sampler2D u_alpha_texture;
 
 uniform bool u_use_ambient_texture;
 uniform bool u_use_diffuse_texture;
 uniform bool u_use_specular_texture;
 uniform bool u_use_emissive_texture;
+uniform bool u_use_alpha_texture;
 
 uniform int u_lights_count;
 uniform Ligth u_lights[LIGHT_MAX];
@@ -81,49 +83,48 @@ vec3 blinnPhong(vec3 w_i, vec3 l_i, vec3 n, vec3 k_d, vec3 k_s, float shininess)
     return l_i * ( result_diffuse + result_specular );
 }
 
-vec3 calculateLight(Ligth light, vec3 ambient, vec3 diffuse, vec3 specular, vec3 normal) {
+vec3 calculateLight(Ligth light, vec3 ambient, vec3 diffuse, vec3 specular, vec3 normal, float shininess) {
     if (light.type == LIGHT_AMBIENT) {
         return ambient * light.color * light.strength;
     } else if (light.type == LIGHT_POINT) {
         vec3 direction = normalize(light.pos_or_dir - v_position);
         float strength = 1.0 / pow(length(light.pos_or_dir - v_position), 2);
-        return blinnPhong(direction, light.color * light.strength * strength, normal, diffuse, specular, 32.);
+        return blinnPhong(direction, light.color * light.strength * strength, normal, diffuse, specular, shininess);
     } else if (light.type == LIGHT_DIRECTIONAL) {
         vec3 direction = normalize(-light.pos_or_dir);
-        return blinnPhong(direction, light.color * light.strength, normal, diffuse, specular, 32.);
+        return blinnPhong(direction, light.color * light.strength, normal, diffuse, specular, shininess);
     } 
     return vec3(0);
 }
 
 void main() {
-    vec4 ambient = u_ambient;
-    vec4 diffuse = u_diffuse;
-    vec4 specular = u_specular;
-    vec4 emissive = u_emissive;
+    vec3 ambient = u_ambient;
+    vec3 diffuse = u_diffuse;
+    vec3 specular = u_specular;
+    vec3 emissive = u_emissive;
     float shininess = u_shininess;
+    float alpha = 1.0;
 
     if (u_use_ambient_texture) {
-        vec4 tex = texture(u_ambient_texture, v_uv).rgba;
-        ambient *= tex * tex.a;
+        ambient *= texture(u_ambient_texture, v_uv).rgb;
     }
     if (u_use_diffuse_texture) {
-        vec4 tex = texture(u_diffuse_texture, v_uv).rgba;
-        diffuse *= tex * tex.a;
+        diffuse *= texture(u_diffuse_texture, v_uv).rgb;
     }
     if (u_use_specular_texture) {
-        vec4 tex = texture(u_specular_texture, v_uv).rgba;
-        specular *= tex * tex.a;
+        specular *= texture(u_specular_texture, v_uv).rgb;
     }
     if (u_use_emissive_texture) {
-        vec4 tex = texture(u_emissive_texture, v_uv).rgba;
-        emissive *= tex * tex.a;
+        emissive *= texture(u_emissive_texture, v_uv).rgb;
+    }
+    if (u_use_alpha_texture) {
+        alpha *= texture(u_alpha_texture, v_uv).a;
     }
 
     vec3 color = emissive.rgb;
-    float alpha = max(max(diffuse.a, specular.a), max(ambient.a, emissive.a));
     vec3 normal = normalize(v_normal);
     for(int i = 0; i < u_lights_count; i++) {
-        color += calculateLight(u_lights[i], ambient.rgb, diffuse.rgb, specular.rgb, normal);
+        color += calculateLight(u_lights[i], ambient.rgb, diffuse.rgb, specular.rgb, normal, shininess);
     }
 
     f_frag_color = vec4(color, alpha);

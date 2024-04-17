@@ -110,38 +110,42 @@ MaterialObject loadWavefront(const std::filesystem::path& path) {
 
     for (const auto& t_material : materials) {
         MaterialData material;
-        material.ambient = ColorRGBA(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2], 1);
-        material.diffuse = ColorRGBA(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2], 1);
-        material.specular = ColorRGBA(t_material.specular[0], t_material.specular[1], t_material.specular[2], 1);
-        material.emissive = ColorRGBA(t_material.emission[0], t_material.emission[1], t_material.emission[2], 1);
-        material.shininess = t_material.shininess;
+        material.ambient = ColorRGB(t_material.ambient[0], t_material.ambient[1], t_material.ambient[2]);
+        material.diffuse = ColorRGB(t_material.diffuse[0], t_material.diffuse[1], t_material.diffuse[2]);
+        material.specular = ColorRGB(t_material.specular[0], t_material.specular[1], t_material.specular[2]);
+        material.emissive = ColorRGB(t_material.emission[0], t_material.emission[1], t_material.emission[2]);
+        material.shininess = (t_material.shininess > 1.f) ? t_material.shininess : 1.f;
         if (!t_material.ambient_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.ambient_texname));
             material.ambient_texture = texture;
-            if (material.ambient == ColorRGBA(0, 0, 0, 1)) {
-                material.ambient = ColorRGBA(1);
+            if (material.ambient == ColorRGB(0, 0, 0)) {
+                material.ambient = ColorRGB(1);
             }
         }
         if (!t_material.diffuse_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.diffuse_texname));
             material.diffuse_texture = texture;
-            if (material.diffuse == ColorRGBA(0, 0, 0, 1)) {
-                material.diffuse = ColorRGBA(1);
+            if (material.diffuse == ColorRGB(0, 0, 0)) {
+                material.diffuse = ColorRGB(1);
             }
         }
         if (!t_material.specular_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.specular_texname));
             material.specular_texture = texture;
-            if (material.specular == ColorRGBA(0, 0, 0, 1)) {
-                material.specular = ColorRGBA(1);
+            if (material.specular == ColorRGB(0, 0, 0)) {
+                material.specular = ColorRGB(1);
             }
         }
         if (!t_material.emissive_texname.empty()) {
             auto texture = TextureFactory::create(Texture(parent / t_material.emissive_texname));
             material.emissive_texture = texture;
-            if (material.emissive == ColorRGBA(0, 0, 0, 1)) {
-                material.emissive = ColorRGBA(1);
+            if (material.emissive == ColorRGB(0, 0, 0)) {
+                material.emissive = ColorRGB(1);
             }
+        }
+        if (!t_material.alpha_texname.empty()) {
+            auto texture = TextureFactory::create(Texture(parent / t_material.alpha_texname));
+            material.alpha_texture = texture;
         }
         totogl_materials.push_back(material);
     }

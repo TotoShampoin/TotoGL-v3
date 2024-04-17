@@ -8,15 +8,16 @@
 namespace TotoGL {
 
 struct MaterialData {
-    ColorRGBA ambient;
-    ColorRGBA diffuse;
-    ColorRGBA specular;
-    ColorRGBA emissive;
+    ColorRGB ambient;
+    ColorRGB diffuse;
+    ColorRGB specular;
+    ColorRGB emissive;
     float shininess;
     std::optional<TextureInstanceId> ambient_texture;
     std::optional<TextureInstanceId> diffuse_texture;
     std::optional<TextureInstanceId> specular_texture;
     std::optional<TextureInstanceId> emissive_texture;
+    std::optional<TextureInstanceId> alpha_texture;
 };
 
 } // namespace TotoGL

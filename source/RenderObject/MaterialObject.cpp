@@ -89,6 +89,12 @@ RenderObject MaterialObject::get(const size_t& index) const {
     } else {
         _shader_material->uniform("u_use_emissive_texture", false);
     }
+    if (material.alpha_texture) {
+        _shader_material->uniform("u_alpha_texture", material.alpha_texture.value());
+        _shader_material->uniform("u_use_alpha_texture", true);
+    } else {
+        _shader_material->uniform("u_use_alpha_texture", false);
+    }
     object.transformation() = _transform;
     return object;
 }
