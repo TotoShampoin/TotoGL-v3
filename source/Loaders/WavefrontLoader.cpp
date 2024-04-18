@@ -147,7 +147,7 @@ MaterialObject loadWavefront(const std::filesystem::path& path) {
             auto texture = TextureFactory::create(Texture(parent / t_material.specular_highlight_texname));
             material.shininess_texture = texture;
             if (material.shininess == 1.f) {
-                material.shininess = 1000.f;
+                material.shininess = 100.f;
             }
         }
         if (!t_material.alpha_texname.empty()) {
