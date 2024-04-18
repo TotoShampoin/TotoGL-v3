@@ -18,6 +18,10 @@ public:
 
     Transform& lookAt(const glm::vec3& target, const glm::vec3& up = { 0, 1, 0 });
 
+    glm::vec3 front() const;
+    glm::vec3 right() const;
+    glm::vec3 up() const;
+
     glm::vec3& translation() { return _translation; }
     const glm::vec3& translation() const { return _translation; }
     glm::mat4 translationMatrix() const;

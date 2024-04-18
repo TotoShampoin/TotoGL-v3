@@ -62,4 +62,14 @@ Transform& Transform::lookAt(const glm::vec3& target, const glm::vec3& up) {
     return *this;
 }
 
+glm::vec3 Transform::front() const {
+    return rotationMatrix() * glm::vec4(0, 0, -1, 0);
+}
+glm::vec3 Transform::right() const {
+    return rotationMatrix() * glm::vec4(1, 0, 0, 0);
+}
+glm::vec3 Transform::up() const {
+    return rotationMatrix() * glm::vec4(0, 1, 0, 0);
+}
+
 } // namespace TotoGL
