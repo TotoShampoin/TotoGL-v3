@@ -43,21 +43,6 @@ void Renderer::clear(bool color, bool depth, bool stencil) {
 void Renderer::render(
     TotoGL::Scene& scene, TotoGL::Camera& camera,
     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> alternate_material) {
-    // std::vector<std::reference_wrapper<TotoGL::RenderObject>> objects;
-    // std::vector<std::reference_wrapper<TotoGL::Light>> lights;
-    // std::vector<std::reference_wrapper<TotoGL::Skydome>> skydomes;
-    // std::vector<std::reference_wrapper<TotoGL::MaterialObject>> material_objects;
-    // for (auto& component : scene.sceneComponents()) {
-    //     if (std::holds_alternative<std::reference_wrapper<TotoGL::RenderObject>>(component)) {
-    //         objects.push_back(std::get<std::reference_wrapper<TotoGL::RenderObject>>(component));
-    //     } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Light>>(component)) {
-    //         lights.push_back(std::get<std::reference_wrapper<TotoGL::Light>>(component));
-    //     } else if (std::holds_alternative<std::reference_wrapper<TotoGL::Skydome>>(component)) {
-    //         skydomes.push_back(std::get<std::reference_wrapper<TotoGL::Skydome>>(component));
-    //     } else if (std::holds_alternative<std::reference_wrapper<TotoGL::MaterialObject>>(component)) {
-    //         material_objects.push_back(std::get<std::reference_wrapper<TotoGL::MaterialObject>>(component));
-    //     }
-    // }
     std::vector<TotoGL::RenderObjectInstanceId> objects;
     std::vector<TotoGL::LightInstanceId> lights;
     std::vector<TotoGL::SkydomeInstanceId> skydomes;
@@ -82,19 +67,10 @@ void Renderer::render(
         render(*object, camera, lights, alternate_material);
     }
     for (auto& material_object : material_objects) {
-        // auto& material_object = material_object_ref.get();
-        // for (size_t i = 0; i < material_object.size(); i++) {
-        //     auto object = material_object.get(i);
-        //     render(object, camera, lights, alternate_material);
-        // }
         render(*material_object, camera, lights, alternate_material);
     }
 }
 
-// void Renderer::render(
-//     TotoGL::RenderObject& object, TotoGL::Camera& camera,
-//     std::optional<std::vector<std::reference_wrapper<TotoGL::Light>>> lights,
-//     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> alternate_material) {
 void Renderer::render(
     TotoGL::RenderObject& object, TotoGL::Camera& camera,
     std::optional<std::vector<TotoGL::LightInstanceId>> lights,
@@ -109,10 +85,6 @@ void Renderer::render(
     draw(mesh, material);
 }
 
-// void Renderer::render(
-//     TotoGL::MaterialObject& material_object, TotoGL::Camera& camera,
-//     std::optional<std::vector<std::reference_wrapper<TotoGL::Light>>> lights,
-//     std::optional<std::reference_wrapper<TotoGL::ShaderMaterial>> alternate_material) {
 void Renderer::render(
     TotoGL::MaterialObject& material_object, TotoGL::Camera& camera,
     std::optional<std::vector<TotoGL::LightInstanceId>> lights,
@@ -136,13 +108,6 @@ void Renderer::applyCamera(TotoGL::Camera& camera, TotoGL::Mesh& mesh, TotoGL::S
     material.uniform("u_modelview", modelview);
     material.uniform("u_normal", normal);
 }
-
-// void Renderer::applyLights(std::vector<std::reference_wrapper<TotoGL::Light>>& lights, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera) {
-//     material.uniform("u_lights_count", static_cast<int>(lights.size()));
-//     for (size_t i = 0; i < lights.size(); i++) {
-//         applyLight(lights[i], material, camera, i);
-//     }
-// }
 
 void Renderer::applyLights(std::vector<TotoGL::LightInstanceId>& lights, TotoGL::ShaderMaterial& material, TotoGL::Camera& camera) {
     material.uniform("u_lights_count", static_cast<int>(lights.size()));
