@@ -32,8 +32,10 @@ void Window::init() {
 }
 
 void Window::draw(const std::function<void(void)>& callback) {
+    std::array<int, 2> framebuffer_size;
+    glfwGetFramebufferSize(_glfw_window, &framebuffer_size[0], &framebuffer_size[1]);
     glfwMakeContextCurrent(_glfw_window);
-    glViewport(0, 0, size()[0], size()[1]);
+    glViewport(0, 0, framebuffer_size[0], framebuffer_size[1]);
     callback();
     glfwSwapBuffers(_glfw_window);
     glfwPollEvents();
